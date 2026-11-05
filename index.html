@@ -242,9 +242,12 @@
         </div>
         <div class="struct-strip" id="structStrip"></div>
         <div class="action-row">
-          <button class="btn-primary" onclick="checkSentence()">✅ Prüfen</button>
+          <button class="btn-primary" id="checkBtn" onclick="checkSentence()">✅ Prüfen</button>
           <button class="btn-success" onclick="saveSentence()">💾 Speichern</button>
           <button class="btn-outline" onclick="clearInput()">🗑️ Leeren</button>
+        </div>
+        <div style="margin-top:8px;font-size:0.75rem;color:var(--text-muted);display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+          <span>⚡ 17 lokale B2-Regeln + 🔎 LanguageTool Deep-Check (Hochdeutsch)</span>
         </div>
         <div class="feedback-box" id="feedbackBox">
           <div class="fb-title" id="fbTitle"></div>
@@ -842,13 +845,35 @@ function clearInput() {
 }
 
 // ===== GRAMMAR CHECK =====
-function checkSentence() {
+// Deep check via LanguageTool (free public API, Hochdeutsch de-DE)
+async function languageToolCheck(text) {
+  try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 8000);
+    const body = new URLSearchParams({ language: 'de-DE', text: text, enabledOnly: 'false' });
+    const resp = await fetch('https://api.languagetool.org/v2/check', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: body.toString(),
+      signal: controller.signal
+    });
+    clearTimeout(timer);
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const data = await resp.json();
+    return (data.matches || []).filter(m => m.message && m.message.length > 0);
+  } catch (e) {
+    return null; // deep check unavailable — caller falls back to local rules
+  }
+}
+
+async function checkSentence() {
   const input = document.getElementById('sentenceInput');
   const text = input.value.trim();
   const fb = document.getElementById('feedbackBox');
   const fbTitle = document.getElementById('fbTitle');
   const fbList = document.getElementById('fbList');
   const fbScore = document.getElementById('fbScore');
+  const checkBtn = document.getElementById('checkBtn');
 
   if (!text) {
     fb.className = 'feedback-box help show';
@@ -859,14 +884,49 @@ function checkSentence() {
     return;
   }
 
-  const result = checkGermanGrammar(text);
-  fbList.innerHTML = result.issues.map(i => `<li>${i}</li>`).join('');
+  // Instant local rule pass (fast feedback)
+  const local = checkGermanGrammar(text);
+  checkBtn.disabled = true;
+  checkBtn.innerHTML = '⏳ Prüfe hochdeutsch ...';
 
-  if (result.issues.length === 0) {
+  // Deep pass via LanguageTool
+  const ltMatches = await languageToolCheck(text);
+  checkBtn.disabled = false;
+  checkBtn.innerHTML = '✅ Prüfen';
+
+  // Merge: LanguageTool findings first (authoritative), then local rules
+  const items = [];
+  const ltErrorCount = (ltMatches && ltMatches.length) || 0;
+  if (ltMatches) {
+    for (const m of ltMatches.slice(0, 8)) {
+      const short = m.shortMessage || m.message;
+      const reps = (m.replacements || []).slice(0, 3).map(r => r.value);
+      const suggestion = reps.length ? ` → <b>${reps.join('</b> oder <b>')}</b>` : '';
+      items.push(`🔎 ${escHtml(short)}${suggestion}`);
+    }
+  }
+  // add local rule issues that aren't already covered by LanguageTool
+  for (const issue of local.issues.slice(0, 6)) {
+    items.push(escHtml(issue));
+  }
+
+  // Score: local score minus deep-check deductions
+  let finalScore = local.score - Math.min(ltErrorCount, 6) * 4;
+  finalScore = Math.max(0, Math.min(100, finalScore));
+
+  fbList.innerHTML = items.map(i => `<li>${i}</li>`).join('');
+
+  const deepNote = ltMatches === null
+    ? '<div style="margin-top:8px;font-size:0.8rem;color:var(--text-muted);">ℹ️ Deep-Check nicht erreichbar (offline?) — lokale Regeln verwendet.</div>'
+    : (ltMatches.length > 0
+      ? '<div style="margin-top:8px;font-size:0.8rem;color:var(--text-muted);">🔎 Deep-Check: LanguageTool (Hochdeutsch de-DE)</div>'
+      : '<div style="margin-top:8px;font-size:0.8rem;color:var(--text-muted);">✅ Deep-Check: LanguageTool fand keine Fehler.</div>');
+
+  if (items.length === 0) {
     fb.className = 'feedback-box good show';
     fbTitle.innerHTML = '🎉 Sehr gut! Grammatisch stimmig!';
     playSound('success');
-  } else if (result.score >= 75) {
+  } else if (finalScore >= 75) {
     fb.className = 'feedback-box help show';
     fbTitle.innerHTML = '👍 Fast perfekt! Kleine Korrekturen:';
     playSound('warning');
@@ -876,20 +936,23 @@ function checkSentence() {
     playSound('error');
   }
 
-  fbScore.textContent = `Punktzahl: ${result.score}/100 — ${gradeText(result.grade)}`;
-  fbScore.className = 'fb-score ' + result.grade;
+  fbScore.textContent = `Punktzahl: ${finalScore}/100 — ${gradeText(gradeForScore(finalScore))}`;
+  fbScore.className = 'fb-score ' + gradeForScore(finalScore);
+  fb.innerHTML += deepNote;
 
   // XP for checking
-  addXP(Math.round(result.score / 10));
-
-  // Auto-insert suggestion for obwohl/weil issues
-  if (result.issues.some(i => i.includes('Nebensatz'))) {
-    fb.innerHTML += '<div style="margin-top:6px;font-size:1.1rem;color:var(--text-muted);">💡 Tipp: Setze das Verb ans Satzende des Nebensatzes.</div>';
-  }
+  addXP(Math.round(finalScore / 10));
 }
 
 function gradeText(grade) {
   return { a: 'Ausgezeichnet! ⭐', b: 'Gut gemacht!', c: 'Okay, übe weiter!', d: 'Noch üben!' }[grade];
+}
+
+function gradeForScore(score) {
+  if (score >= 90) return 'a';
+  if (score >= 75) return 'b';
+  if (score >= 55) return 'c';
+  return 'd';
 }
 
 // ===== XP & LEVELS =====
