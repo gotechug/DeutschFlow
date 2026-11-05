@@ -2,412 +2,263 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>B2.1 Deutsch Schreibtraining</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>DeutschFlow — B2.1 Schreibquest</title>
 <style>
-  :root {
-    --bg: #f8fafc;
-    --surface: #ffffff;
-    --border: #e2e8f0;
-    --text: #1e293b;
-    --text-secondary: #64748b;
-    --primary: #2563eb;
-    --primary-hover: #1d4ed8;
-    --primary-light: #dbeafe;
-    --accent: #f59e0b;
-    --success: #10b981;
-    --danger: #ef4444;
-    --radius: 12px;
-    --shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
-    --shadow-lg: 0 4px 6px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.06);
-  }
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #101838;
+    --surface: #283058;
+    --surface2: #1a2448;
+    --surface3: #364070;
+    --primary: #2040D8;
+    --primary-glow: #88A0F8;
+    --accent: #E03028;
+    --accent-glow: #F06050;
+    --gold: #F0C040;
+    --gold-glow: #F8D870;
+    --green: #40B060;
+    --green-glow: #60D080;
+    --text: #F8F8F8;
+    --text-dim: #88A0F8;
+    --text-muted: #707890;
+    --border: #364070;
+    --radius: 12px;
+    --cream: #F0E8E0;
+  }
+  @keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes float { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-6px); } }
+  @keyframes confetti-fall { 0% { transform:translateY(-100vh) rotate(0deg); opacity:1; } 100% { transform:translateY(100vh) rotate(720deg); opacity:0; } }
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.6;
-    min-height: 100vh;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden;
   }
-  .app-header {
-    background: linear-gradient(135deg, #2563eb, #1d4ed8);
-    color: white;
-    padding: 24px 20px;
-    text-align: center;
-  }
-  .app-header h1 { font-size: 1.6rem; margin-bottom: 4px; }
-  .app-header p { font-size: 0.95rem; opacity: 0.85; }
-  .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: var(--surface); }
+  ::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 3px; }
 
-  /* Navigation */
-  .module-nav {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 24px;
-    flex-wrap: wrap;
+  .header {
+    background: linear-gradient(135deg, #101838, #1a2448, #283058);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 14px; position: sticky; top: 0; z-index: 100;
   }
-  .module-nav button {
-    padding: 10px 20px;
-    border: 2px solid var(--border);
-    background: var(--surface);
-    border-radius: var(--radius);
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--text-secondary);
-    transition: all 0.2s;
-  }
-  .module-nav button:hover { border-color: var(--primary); color: var(--primary); }
-  .module-nav button.active { background: var(--primary); color: white; border-color: var(--primary); }
+  .header-inner { max-width: 800px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .logo { display: flex; align-items: center; gap: 6px; font-size: 1.1rem; font-weight: 800; background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .logo-icon { font-size: 1.3rem; -webkit-text-fill-color: initial; }
+  .stats-bar { display: flex; gap: 10px; align-items: center; font-size: 0.75rem; }
+  .stat-item { display: flex; align-items: center; gap: 2px; color: var(--text-dim); }
+  .stat-item .val { font-weight: 700; font-size: 0.85rem; }
+  .stat-item .val.xp { color: var(--primary-glow); }
+  .stat-item .val.streak { color: var(--accent-glow); }
+  .level-bar-wrap { max-width: 800px; margin: 6px auto 0; display: flex; align-items: center; gap: 6px; }
+  .level-label { font-size: 0.6rem; color: var(--text-dim); font-weight: 700; white-space: nowrap; }
+  .level-bar { flex: 1; height: 4px; background: var(--surface3); border-radius: 3px; overflow: hidden; }
+  .level-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); border-radius: 3px; transition: width 0.5s ease; width: 0%; }
 
-  .topic-nav {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
+  .container { max-width: 800px; margin: 0 auto; padding: 10px; }
+  .topic-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 10px; }
+  @media (max-width: 500px) { .topic-grid { grid-template-columns: 1fr; } }
+  .topic-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 10px; cursor: pointer; transition: all 0.25s; position: relative; overflow: hidden;
   }
-  .topic-nav button {
-    padding: 8px 16px;
-    border: 1px solid var(--border);
-    background: var(--surface);
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-    transition: all 0.2s;
-  }
-  .topic-nav button:hover { border-color: var(--primary); color: var(--primary); }
-  .topic-nav button.active { background: var(--primary-light); color: var(--primary); border-color: var(--primary); font-weight: 600; }
+  .topic-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--primary), var(--accent)); opacity: 0; transition: opacity 0.25s; }
+  .topic-card.active { border-color: var(--primary); box-shadow: 0 0 16px rgba(59,130,246,0.15); }
+  .topic-card.active::before { opacity: 1; }
+  .topic-card:active { transform: scale(0.97); }
+  .topic-card .topic-name { font-weight: 700; font-size: 0.85rem; margin-bottom: 1px; }
+  .topic-card .topic-sub { font-size: 0.65rem; color: var(--text-dim); }
+  .topic-card .topic-emoji { font-size: 1.1rem; margin-bottom: 2px; }
 
-  /* Main layout */
-  .main-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-  }
-  @media (max-width: 768px) {
-    .main-grid { grid-template-columns: 1fr; }
-  }
+  .game-area { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; margin-bottom: 10px; animation: slideUp 0.3s ease; }
+  .game-area.hidden { display: none; }
+  .section-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
+  .section-title .badge { font-size: 0.55rem; background: var(--surface3); color: var(--text-dim); padding: 1px 7px; border-radius: 10px; font-weight: 600; }
 
-  .card {
-    background: var(--surface);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    padding: 20px;
-    margin-bottom: 20px;
-  }
-  .card h2 {
-    font-size: 1.15rem;
-    margin-bottom: 16px;
-    color: var(--text);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .card h2 .icon { font-size: 1.3rem; }
+  .vocab-chips { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 10px; max-height: 180px; overflow-y: auto; }
+  .vocab-chip { padding: 3px 8px; background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; font-size: 0.72rem; color: var(--text-dim); cursor: pointer; transition: all 0.15s; user-select: none; -webkit-tap-highlight-color: transparent; }
+  .vocab-chip:active { transform: scale(0.92); }
+  .vocab-chip .de { color: var(--primary-glow); font-weight: 600; }
+  .vocab-chip .en { font-size: 0.65rem; color: var(--text-muted); }
 
-  /* Vocabulary */
-  .vocab-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 6px;
-  }
-  .vocab-item {
-    padding: 8px 10px;
-    background: var(--bg);
-    border-radius: 6px;
-    font-size: 0.88rem;
-    cursor: pointer;
-    transition: all 0.15s;
-    display: flex;
-    justify-content: space-between;
-  }
-  .vocab-item:hover { background: var(--primary-light); }
-  .vocab-item .de { font-weight: 500; color: var(--primary); }
-  .vocab-item .en { color: var(--text-secondary); font-size: 0.82rem; }
-  .vocab-item .badge {
-    font-size: 0.7rem;
-    background: var(--primary-light);
-    color: var(--primary);
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-weight: 600;
-  }
+  .input-wrap { position: relative; margin-bottom: 6px; }
+  .input-wrap textarea { width: 100%; min-height: 80px; padding: 10px; background: var(--surface2); border: 2px solid var(--border); border-radius: 10px; color: var(--text); font-size: 0.9rem; font-family: inherit; line-height: 1.5; resize: vertical; transition: border-color 0.2s; }
+  .input-wrap textarea:focus { outline: none; border-color: var(--primary); }
+  .input-wrap textarea::placeholder { color: var(--text-muted); }
 
-  /* Subtopic chips */
-  .subtopics {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-bottom: 16px;
-  }
-  .subtopic-chip {
-    padding: 4px 10px;
-    background: var(--bg);
-    border-radius: 20px;
-    font-size: 0.78rem;
-    color: var(--text-secondary);
-    border: 1px solid var(--border);
-  }
+  .struct-strip { display: flex; flex-wrap: wrap; gap: 3px; margin-bottom: 8px; }
+  .struct-btn { padding: 2px 7px; background: var(--surface3); border: 1px solid transparent; border-radius: 4px; font-size: 0.65rem; color: var(--gold); cursor: pointer; transition: all 0.15s; -webkit-tap-highlight-color: transparent; }
+  .struct-btn:active { background: var(--primary); color: white; }
 
-  /* Sentence builder */
-  .sentence-builder textarea {
-    width: 100%;
-    min-height: 100px;
-    padding: 12px;
-    border: 2px solid var(--border);
-    border-radius: 8px;
-    font-size: 1rem;
-    font-family: inherit;
-    resize: vertical;
-    transition: border-color 0.2s;
-  }
-  .sentence-builder textarea:focus { outline: none; border-color: var(--primary); }
+  .action-row { display: flex; gap: 5px; flex-wrap: wrap; }
+  .action-row button { flex: 1; min-width: 70px; padding: 8px 10px; border: none; border-radius: 8px; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.2s; -webkit-tap-highlight-color: transparent; display: flex; align-items: center; justify-content: center; gap: 3px; }
+  .action-row button:active { transform: scale(0.95); }
+  .btn-primary { background: linear-gradient(135deg, #E03028, #B02018); color: white; }
+  .btn-success { background: linear-gradient(135deg, #40B060, #208040); color: white; }
+  .btn-outline { background: transparent; border: 1px solid var(--border) !important; color: var(--text-dim); }
 
-  .sentence-tools {
-    display: flex;
-    gap: 8px;
-    margin-top: 10px;
-    flex-wrap: wrap;
-  }
-  .sentence-tools button {
-    padding: 8px 16px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 0.85rem;
-    font-weight: 500;
-    transition: all 0.2s;
-  }
-  .btn-primary { background: var(--primary); color: white; }
-  .btn-primary:hover { background: var(--primary-hover); }
-  .btn-success { background: var(--success); color: white; }
-  .btn-success:hover { opacity: 0.9; }
-  .btn-outline {
-    background: transparent;
-    border: 1px solid var(--border) !important;
-    color: var(--text-secondary);
-  }
-  .btn-outline:hover { border-color: var(--primary) !important; color: var(--primary); }
-  .btn-danger { background: var(--danger); color: white; }
-  .btn-danger:hover { opacity: 0.9; }
+  .feedback-box { margin-top: 8px; padding: 10px; border-radius: 10px; font-size: 0.8rem; line-height: 1.5; display: none; }
+  .feedback-box.show { display: block; animation: slideUp 0.3s ease; }
+  .feedback-box.good { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); }
+  .feedback-box.warn { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); }
+  .feedback-box.help { background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.3); }
+  .feedback-box .fb-title { font-weight: 700; margin-bottom: 3px; display: flex; align-items: center; gap: 5px; font-size: 0.85rem; }
+  .feedback-box .fb-list { list-style: none; padding: 0; }
+  .feedback-box .fb-list li { padding: 1px 0; padding-left: 12px; position: relative; font-size: 0.78rem; }
+  .feedback-box .fb-list li::before { content: '•'; position: absolute; left: 2px; color: var(--primary); }
+  .feedback-box .fb-score { display: inline-block; padding: 1px 7px; border-radius: 4px; font-weight: 700; font-size: 0.7rem; margin-top: 4px; }
+  .fb-score.a { background: rgba(16,185,129,0.2); color: var(--green-glow); }
+  .fb-score.b { background: rgba(59,130,246,0.2); color: var(--primary-glow); }
+  .fb-score.c { background: rgba(245,158,11,0.2); color: var(--gold-glow); }
+  .fb-score.d { background: rgba(239,68,68,0.2); color: var(--accent-glow); }
 
-  /* Structure buttons */
-  .structure-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-top: 10px;
-  }
-  .structure-btn {
-    padding: 5px 12px;
-    border: 1px solid var(--accent);
-    background: #fffbeb;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.82rem;
-    color: #92400e;
-    transition: all 0.15s;
-  }
-  .structure-btn:hover { background: #fef3c7; }
-
-  /* Saved sentences */
   .saved-list { list-style: none; }
-  .saved-item {
-    padding: 12px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    margin-bottom: 8px;
-    position: relative;
-  }
-  .saved-item .saved-text { font-size: 0.95rem; margin-bottom: 4px; }
-  .saved-item .saved-meta {
-    font-size: 0.78rem;
-    color: var(--text-secondary);
-    display: flex;
-    gap: 12px;
-    align-items: center;
-  }
-  .saved-item .saved-meta .tag {
-    background: var(--primary-light);
-    color: var(--primary);
-    padding: 1px 8px;
-    border-radius: 4px;
-    font-weight: 600;
-  }
-  .saved-item .delete-btn {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    background: none;
-    border: none;
-    color: var(--text-secondary);
-    cursor: pointer;
-    font-size: 1.1rem;
-    padding: 4px;
-  }
-  .saved-item .delete-btn:hover { color: var(--danger); }
+  .saved-item { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 8px; margin-bottom: 5px; position: relative; animation: slideUp 0.3s ease; }
+  .saved-item .s-text { font-size: 0.84rem; margin-bottom: 2px; }
+  .saved-item .s-meta { font-size: 0.64rem; color: var(--text-muted); display: flex; gap: 5px; align-items: center; flex-wrap: wrap; }
+  .saved-item .s-tag { background: var(--surface3); padding: 1px 5px; border-radius: 4px; font-weight: 600; color: var(--primary-glow); }
+  .saved-item .s-delete { position: absolute; top: 5px; right: 5px; background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.85rem; padding: 3px; transition: color 0.15s; }
+  .saved-item .s-delete:hover { color: var(--accent); }
 
-  /* Writing prompts */
-  .prompt-card {
-    padding: 14px;
-    background: var(--bg);
-    border-radius: 8px;
-    margin-bottom: 8px;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .prompt-card:hover { background: var(--primary-light); }
-  .prompt-card .prompt-num {
-    font-size: 0.75rem;
-    color: var(--primary);
-    font-weight: 700;
-    margin-bottom: 2px;
-  }
+  .prompt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+  @media (max-width: 500px) { .prompt-grid { grid-template-columns: 1fr; } }
+  .prompt-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 8px; cursor: pointer; transition: all 0.15s; font-size: 0.75rem; line-height: 1.3; }
+  .prompt-card:active { transform: scale(0.97); }
+  .prompt-card .p-num { font-size: 0.55rem; color: var(--gold); font-weight: 700; margin-bottom: 2px; }
+  .prompt-card:hover { border-color: var(--primary); }
 
-  /* Empty state */
-  .empty-state {
-    text-align: center;
-    padding: 30px 20px;
-    color: var(--text-secondary);
-  }
-  .empty-state .big-icon { font-size: 2.5rem; margin-bottom: 10px; }
+  .prompt-active { display: none; margin-top: 8px; padding: 10px; background: var(--surface2); border: 1px solid var(--gold); border-radius: 10px; }
+  .prompt-active.show { display: block; animation: slideUp 0.3s ease; }
+  .prompt-q { font-weight: 600; margin-bottom: 6px; font-size: 0.84rem; }
 
-  /* Toast */
-  .toast {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    background: var(--text);
-    color: white;
-    padding: 12px 20px;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: all 0.3s;
-    z-index: 1000;
-  }
-  .toast.show { opacity: 1; transform: translateY(0); }
+  .achieve-toast { position: fixed; top: 70px; left: 50%; transform: translateX(-50%); background: var(--surface); border: 1px solid var(--gold); border-radius: var(--radius); padding: 12px 18px; z-index: 999; opacity: 0; pointer-events: none; transition: all 0.4s; text-align: center; box-shadow: 0 0 30px rgba(245,158,11,0.3); min-width: 220px; }
+  .achieve-toast.show { opacity: 1; pointer-events: auto; animation: float 2s ease-in-out infinite; }
+  .achieve-toast .ach-icon { font-size: 1.6rem; margin-bottom: 2px; }
+  .achieve-toast .ach-title { font-weight: 700; font-size: 0.9rem; }
+  .achieve-toast .ach-desc { font-size: 0.7rem; color: var(--text-dim); }
 
-  /* Prompt writing area */
-  .prompt-active {
-    display: none;
-    margin-top: 16px;
-    padding: 16px;
-    background: #fffbeb;
-    border: 1px solid var(--accent);
-    border-radius: 8px;
-  }
-  .prompt-active.show { display: block; }
-  .prompt-active .prompt-question { font-weight: 600; margin-bottom: 10px; }
+  .confetti-piece { position: fixed; width: 5px; height: 5px; border-radius: 2px; animation: confetti-fall 3s ease-in forwards; z-index: 1000; pointer-events: none; }
+
+  .empty-state { text-align: center; padding: 20px 14px; color: var(--text-muted); }
+  .empty-state .big-icon { font-size: 2rem; margin-bottom: 4px; }
+
+  .help-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 200; display: none; align-items: center; justify-content: center; padding: 14px; }
+  .help-overlay.show { display: flex; }
+  .help-modal { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; max-width: 400px; width: 100%; max-height: 80vh; overflow-y: auto; animation: slideUp 0.3s ease; }
+  .help-modal h2 { margin-bottom: 8px; font-size: 0.95rem; display: flex; align-items: center; gap: 5px; }
+  .help-modal p, .help-modal li { font-size: 0.75rem; color: var(--text-dim); line-height: 1.5; margin-bottom: 3px; }
+  .help-modal ul { padding-left: 14px; }
+  .help-modal .close-btn { margin-top: 12px; width: 100%; padding: 8px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
+
+  .sound-toggle { background: none; border: 1px solid var(--border); color: var(--text-dim); padding: 3px 7px; border-radius: 5px; cursor: pointer; font-size: 0.75rem; transition: all 0.15s; }
+  .sound-toggle:hover { border-color: var(--primary); color: var(--primary); }
 </style>
 </head>
 <body>
 
-<header class="app-header">
-  <h1>✍️ B2.1 Deutsch Schreibtraining</h1>
-  <p>Wähle ein Thema, lerne Vokabeln, schreibe Sätze — und verbessere dein Deutsch!</p>
-</header>
+<div class="achieve-toast" id="achieveToast">
+  <div class="ach-icon" id="achIcon">🏆</div>
+  <div class="ach-title" id="achTitle">Level Up!</div>
+  <div class="ach-desc" id="achDesc">Du hast Stufe 2 erreicht!</div>
+</div>
 
-<div class="container">
-
-  <!-- Module Navigation -->
-  <div class="module-nav" id="moduleNav"></div>
-
-  <!-- Topic Navigation -->
-  <div class="topic-nav" id="topicNav"></div>
-
-  <!-- Main Grid -->
-  <div class="main-grid">
-    <!-- Left Column -->
-    <div>
-      <!-- Topic Info -->
-      <div class="card" id="topicInfo">
-        <h2><span class="icon">📖</span> <span id="topicTitle">Thema</span></h2>
-        <div class="subtopics" id="subtopicsList"></div>
-      </div>
-
-      <!-- Vocabulary -->
-      <div class="card" id="vocabCard">
-        <h2><span class="icon">📝</span> Wortschatz <span id="vocabCount" style="font-size:0.8rem;color:var(--text-secondary);font-weight:400;"></span></h2>
-        <div class="vocab-grid" id="vocabList"></div>
-      </div>
-    </div>
-
-    <!-- Right Column -->
-    <div>
-      <!-- Sentence Builder -->
-      <div class="card">
-        <h2><span class="icon">✏️</span> Satzbauer</h2>
-        <div class="sentence-builder">
-          <textarea id="sentenceInput" placeholder="Schreibe hier deinen Satz auf Deutsch ..." spellcheck="false"></textarea>
-          <div class="sentence-tools">
-            <button class="btn-primary" onclick="saveSentence()">💾 Satz speichern</button>
-            <button class="btn-outline" onclick="clearInput()">🗑️ Zurücksetzen</button>
-          </div>
-          <div style="margin-top:12px;">
-            <small style="color:var(--text-secondary);font-weight:600;">📌 B2-Strukturen einfügen:</small>
-            <div class="structure-buttons" id="structureButtons"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Saved Sentences -->
-      <div class="card">
-        <h2><span class="icon">📚</span> Meine Sätze <span id="savedCount" style="font-size:0.8rem;color:var(--text-secondary);font-weight:400;"></span></h2>
-        <div id="savedList"></div>
-      </div>
-
-      <!-- Writing Prompts -->
-      <div class="card">
-        <h2><span class="icon">💡</span> Schreibimpulse</h2>
-        <div id="promptsList"></div>
-        <div class="prompt-active" id="promptActive">
-          <div class="prompt-question" id="promptQuestion"></div>
-          <div class="sentence-builder">
-            <textarea id="promptInput" placeholder="Deine Antwort auf Deutsch ..." spellcheck="false" style="min-height:80px;"></textarea>
-            <div class="sentence-tools">
-              <button class="btn-success" onclick="savePromptAnswer()">💾 Antwort speichern</button>
-              <button class="btn-outline" onclick="closePrompt()">Abbrechen</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+<div class="help-overlay" id="helpOverlay">
+  <div class="help-modal">
+    <h2>🎮 So funktioniert DeutschFlow</h2>
+    <p><strong>1.</strong> Wähle ein Thema — jedes Thema ist eine Quest.</p>
+    <p><strong>2.</strong> Lerne die Vokabeln — tippe auf ein Wort.</p>
+    <p><strong>3.</strong> Schreibe Sätze — nutze B2-Strukturen.</p>
+    <p><strong>4.</strong> Klicke auf <strong>✅ Prüfen</strong> für Feedback.</p>
+    <p><strong>5.</strong> Sammle XP — je besser der Satz, desto mehr!</p>
+    <p><strong>6.</strong> Schreibimpulse — beantworte Fragen.</p>
+    <hr style="border-color:var(--border);margin:8px 0;">
+    <p style="font-size:0.7rem;color:var(--text-muted)">💡 Deine Sätze bleiben gespeichert.</p>
+    <button class="close-btn" onclick="document.getElementById('helpOverlay').classList.remove('show')">🚀 Loslegen!</button>
   </div>
 </div>
 
-<div class="toast" id="toast"></div>
+<header class="header">
+  <div class="header-inner">
+    <div class="logo"><span class="logo-icon">⚡</span>DeutschFlow</div>
+    <div class="stats-bar">
+      <div class="stat-item">🎯 Lv. <span class="val" id="levelDisplay">1</span></div>
+      <div class="stat-item">✨ <span class="val xp" id="xpDisplay">0</span></div>
+      <div class="stat-item">🔥 <span class="val streak" id="streakDisplay">0</span></div>
+      <button class="sound-toggle" id="soundBtn" onclick="toggleSound()">🔊</button>
+    </div>
+  </div>
+  <div class="level-bar-wrap">
+    <span class="level-label">Lv.<span id="levelLabel">1</span></span>
+    <div class="level-bar"><div class="level-fill" id="levelFill" style="width:0%"></div></div>
+    <span class="level-label" id="xpProgress" style="font-weight:400;">0/100 XP</span>
+  </div>
+</header>
+
+<div class="container">
+  <div class="topic-grid" id="topicGrid"></div>
+
+  <div class="game-area hidden" id="gameArea">
+    <div class="section-title">
+      <span id="gameTopicEmoji">📖</span>
+      <span id="gameTopicTitle">Thema</span>
+      <span class="badge" id="vocabCountBadge">0 Wörter</span>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:3px;margin-bottom:8px;" id="subtopicChips"></div>
+    <div class="vocab-chips" id="vocabChips"></div>
+    <div class="input-wrap">
+      <textarea id="sentenceInput" placeholder="Schreibe hier deinen Satz auf Deutsch ..." spellcheck="false"></textarea>
+    </div>
+    <div class="struct-strip" id="structStrip"></div>
+    <div class="action-row">
+      <button class="btn-primary" onclick="checkSentence()">✅ Prüfen</button>
+      <button class="btn-success" onclick="saveSentence()">💾 Speichern</button>
+      <button class="btn-outline" onclick="clearInput()">🗑️ Leeren</button>
+    </div>
+    <div class="feedback-box" id="feedbackBox">
+      <div class="fb-title" id="fbTitle"></div>
+      <ul class="fb-list" id="fbList"></ul>
+      <div class="fb-score" id="fbScore"></div>
+    </div>
+  </div>
+
+  <div class="game-area" id="promptsArea">
+    <div class="section-title">💡 Schreibimpulse <span class="badge">15</span></div>
+    <div class="prompt-grid" id="promptGrid"></div>
+    <div class="prompt-active" id="promptActive">
+      <div class="prompt-q" id="promptQuestion"></div>
+      <div class="input-wrap">
+        <textarea id="promptInput" placeholder="Deine Antwort auf Deutsch ..." spellcheck="false" style="min-height:70px;"></textarea>
+      </div>
+      <div class="action-row">
+        <button class="btn-success" onclick="savePromptAnswer()">💾 Speichern</button>
+        <button class="btn-outline" onclick="closePrompt()">Abbrechen</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="game-area" id="savedArea">
+    <div class="section-title">📚 Meine Sätze <span class="badge" id="savedCountBadge">0</span></div>
+    <div id="savedList"></div>
+  </div>
+</div>
 
 <script>
+
 // ===== DATA =====
 const DATA = {
-  modules: [
-    {
-      id: 'm1',
-      name: 'Modul 1: Das Leben neu gestalten',
-      topics: ['topic1', 'topic2', 'topic3']
-    },
-    {
-      id: 'm2',
-      name: 'Modul 2: Persönliche Entwicklung & Gesellschaft',
-      topics: ['topic4', 'topic5']
-    }
-  ],
   topics: {
     topic1: {
       name: 'Das Leben neu gestalten',
-      subtitle: 'Redesigning your life / Making a fresh start',
+      emoji: '🔄',
       subtopics: [
-        'Making changes in life and taking a new direction',
+        'Making changes and taking a new direction',
         'Making important life decisions',
         'Overcoming fear and failure',
-        'Starting a new career and developing professionally',
+        'Starting a new career',
         'Personal development and self-confidence',
-        'Changing habits, attitudes and routines',
+        'Changing habits and routines',
         'Dealing with unexpected situations',
-        'Finding motivation and achieving personal dreams'
+        'Finding motivation and achieving dreams'
       ],
       vocab: [
         ['die Veränderung', 'change'],
@@ -422,20 +273,20 @@ const DATA = {
         ['die Führungsposition', 'leadership position'],
         ['überleben', 'to survive'],
         ['sich umstellen', "to adapt / change one's routine"],
-        ['sich etwas zutrauen', 'to feel capable of doing something'],
+        ['sich etwas zutrauen', 'to feel capable'],
         ['das Leben neu gestalten', "to redesign one's life"]
       ]
     },
     topic2: {
       name: 'Ein neues Zuhause finden',
-      subtitle: 'Finding a new home',
+      emoji: '🏠',
       subtopics: [
         'Moving to another country',
-        'Immigration, integration and starting a new life abroad',
-        'Cultural differences and finding a sense of belonging',
-        'Learning a new language and building social connections',
-        'Family background, traditions and identity',
-        'Challenges faced by refugees and immigrants',
+        'Immigration and integration',
+        'Cultural differences and belonging',
+        'Learning a new language',
+        'Family background and identity',
+        'Refugee challenges',
         'Becoming part of a new society'
       ],
       vocab: [
@@ -455,15 +306,15 @@ const DATA = {
     },
     topic3: {
       name: 'Stadtführungen mal anders',
-      subtitle: 'City tours in different ways',
+      emoji: '🏛️',
       subtopics: [
         'Tourism and city experiences',
-        'Discovering historical places and landmarks',
+        'Historical places and landmarks',
         'Cultural differences between cities',
         'Architecture and local history',
-        'Traditional versus modern tourism',
+        'Traditional vs modern tourism',
         'The role of tour guides',
-        'Local food, culture and personal perspectives on tourism'
+        'Local food and culture'
       ],
       vocab: [
         ['die Stadtführung', 'guided city tour'],
@@ -475,28 +326,26 @@ const DATA = {
         ['das Einkaufsviertel', 'shopping district'],
         ['der Nationalpark', 'national park'],
         ['die Sehenswürdigkeit', 'tourist attraction'],
-        ['die Tradition', 'tradition'],
         ['die Erfahrung', 'experience'],
         ['die Aufregung', 'excitement']
       ]
     },
     topic4: {
       name: 'In die Fußstapfen der Eltern treten?',
-      subtitle: "Following in your parents' footsteps?",
+      emoji: '👣',
       subtopics: [
-        "Following your parents' career paths",
-        'Family expectations and parental pressure',
+        "Following parents' career paths",
+        'Family expectations and pressure',
         'Choosing your own profession',
-        'The influence of parents on personal decisions',
+        'Parental influence on decisions',
         'Family traditions and generational differences',
-        'Independence versus family expectations',
-        'Sibling relationships and family support'
+        'Independence vs expectations',
+        'Sibling relationships and support'
       ],
       vocab: [
         ['die Fußstapfen', 'footsteps'],
         ['die Erwartung', 'expectation'],
         ['der Druck', 'pressure'],
-        ['die Entscheidung', 'decision'],
         ['die Überzeugung', 'conviction'],
         ['die Ansicht', 'opinion / view'],
         ['das Verständnis', 'understanding'],
@@ -506,24 +355,23 @@ const DATA = {
         ['die Fürsorge', 'care'],
         ['das Vorbild', 'role model'],
         ['die Abhängigkeit', 'dependence'],
-        ['die Vorschrift', 'regulation / instruction'],
         ['erfüllen', 'to fulfil'],
-        ['sich auswirken auf (+ Akk.)', 'to affect'],
-        ['reagieren auf (+ Akk.)', 'to react to'],
-        ['eingehen auf (+ Akk.)', 'to address / respond to']
+        ['sich auswirken auf', 'to affect'],
+        ['reagieren auf', 'to react to'],
+        ['eingehen auf', 'to address / respond to']
       ]
     },
     topic5: {
       name: 'Das eigene Profil schärfen',
-      subtitle: 'Developing your personal and professional identity',
+      emoji: '⭐',
       subtopics: [
-        'Personal branding and building a professional reputation',
-        'Developing your personality and presenting yourself professionally',
+        'Personal branding and reputation',
+        'Presenting yourself professionally',
         'Social media and online presence',
-        'Building an audience and professional network',
+        'Building an audience and network',
         'Professional skills and qualifications',
-        'Standing out from the competition',
-        'Becoming an expert and communicating your strengths'
+        'Standing out from competition',
+        'Becoming an expert'
       ],
       vocab: [
         ['das Profil', 'profile'],
@@ -534,7 +382,6 @@ const DATA = {
         ['der Berater', 'consultant'],
         ['der Steuerberater', 'tax adviser'],
         ['der Absatz', 'paragraph'],
-        ['die Zwischenüberschrift', 'subheading'],
         ['dynamisch', 'dynamic'],
         ['seriös', 'serious / professional'],
         ['natürlich', 'natural'],
@@ -547,16 +394,16 @@ const DATA = {
     }
   },
   structures: [
-    { name: 'obwohl', desc: 'Although', example: 'Obwohl das Leben im Ausland schwierig sein kann, bietet es viele Chancen.' },
-    { name: 'während', desc: 'While / Whereas', example: 'Während manche Menschen Sicherheit bevorzugen, suchen andere neue Herausforderungen.' },
-    { name: 'einerseits ... andererseits', desc: 'On one hand ... on the other hand', example: 'Einerseits möchte man unabhängig sein, andererseits braucht man Unterstützung.' },
-    { name: 'aufgrund (+ Genitiv)', desc: 'Due to', example: 'Aufgrund der hohen Lebenshaltungskosten ziehen viele Menschen um.' },
-    { name: 'sowohl ... als auch', desc: 'Both ... and', example: 'Sowohl Eltern als auch Kinder müssen Verständnis füreinander haben.' },
-    { name: 'nicht nur ... sondern auch', desc: 'Not only ... but also', example: 'Eine gute Ausbildung verbessert nicht nur die Chancen auf dem Arbeitsmarkt, sondern auch das Selbstvertrauen.' },
-    { name: 'je ... desto', desc: 'The more ..., the more ...', example: 'Je mehr man übt, desto sicherer wird man.' },
-    { name: 'damit', desc: 'So that', example: 'Man sollte Kontakte knüpfen, damit man sich schneller integrieren kann.' },
-    { name: 'aus diesem Grund', desc: 'For this reason', example: 'Viele Menschen suchen neue Herausforderungen. Aus diesem Grund ziehen sie ins Ausland.' },
-    { name: 'meiner Ansicht nach', desc: 'In my opinion', example: 'Meiner Ansicht nach sollten Eltern die Entscheidungen ihrer Kinder respektieren.' }
+    { name: 'obwohl', desc: 'Although', ex: 'Obwohl das Leben im Ausland schwierig sein kann, bietet es viele Chancen.' },
+    { name: 'während', desc: 'While / Whereas', ex: 'Während manche Menschen Sicherheit bevorzugen, suchen andere neue Herausforderungen.' },
+    { name: 'einerseits ... andererseits', desc: 'On one hand ... on the other', ex: 'Einerseits möchte man unabhängig sein, andererseits braucht man Unterstützung.' },
+    { name: 'aufgrund (+ Genitiv)', desc: 'Due to', ex: 'Aufgrund der hohen Lebenshaltungskosten ziehen viele Menschen um.' },
+    { name: 'sowohl ... als auch', desc: 'Both ... and', ex: 'Sowohl Eltern als auch Kinder müssen Verständnis füreinander haben.' },
+    { name: 'nicht nur ... sondern auch', desc: 'Not only ... but also', ex: 'Eine gute Ausbildung verbessert nicht nur die Chancen, sondern auch das Selbstvertrauen.' },
+    { name: 'je ... desto', desc: 'The more ... the more', ex: 'Je mehr man übt, desto sicherer wird man.' },
+    { name: 'damit', desc: 'So that', ex: 'Man sollte Kontakte knüpfen, damit man sich schneller integrieren kann.' },
+    { name: 'aus diesem Grund', desc: 'For this reason', ex: 'Viele Menschen suchen neue Herausforderungen. Aus diesem Grund ziehen sie ins Ausland.' },
+    { name: 'meiner Ansicht nach', desc: 'In my opinion', ex: 'Meiner Ansicht nach sollten Eltern die Entscheidungen ihrer Kinder respektieren.' }
   ],
   prompts: [
     'Warum entscheiden sich Menschen für eine Veränderung im Leben?',
@@ -577,61 +424,319 @@ const DATA = {
   ]
 };
 
-// ===== STATE =====
-let currentModule = 'm1';
+// ===== GERMAN GRAMMAR CHECKER =====
+// Common German nouns for capitalization check
+const GERMAN_NOUNS = new Set([
+  'Leben', 'Ausland', 'Chancen', 'Menschen', 'Sicherheit', 'Herausforderungen',
+  'Eltern', 'Kinder', 'Verständnis', 'Entscheidung', 'Beruf', 'Familie',
+  'Veränderung', 'Richtung', 'Wendepunkt', 'Misserfolg', 'Mut', 'Angst',
+  'Einstellung', 'Führungsposition', 'Weg', 'Zuhause', 'Heimat', 'Flüchtling',
+  'Staatsbürgerschaft', 'Migrationshintergrund', 'Gastarbeiter', 'Tradition',
+  'Lebensbedingungen', 'Kontakte', 'Stadtführung', 'Perspektive', 'Stadtführer',
+  'Wahrzeichen', 'Architektur', 'Altstadt', 'Einkaufsviertel', 'Nationalpark',
+  'Sehenswürdigkeit', 'Erfahrung', 'Aufregung', 'Fußstapfen', 'Erwartung',
+  'Druck', 'Überzeugung', 'Ansicht', 'Konkurrenz', 'Zusammenhalt', 'Stolz',
+  'Fürsorge', 'Vorbild', 'Abhängigkeit', 'Vorschrift', 'Profil', 'Präsenz',
+  'Online-Präsenz', 'Abonnent', 'Design', 'Berater', 'Steuerberater', 'Absatz',
+  'Zwischenüberschrift', 'Meinung', 'Unterstützung', 'Integration', 'Gesellschaft',
+  'Freiheit', 'Zukunft', 'Vergangenheit', 'Gegenwart', 'Problem', 'Lösung',
+  'Möglichkeit', 'Frage', 'Antwort', 'Grund', 'Zeit', 'Jahr', 'Tag', 'Woche',
+  'Monat', 'Arbeit', 'Schule', 'Studium', 'Ausbildung', 'Universität',
+  'Freund', 'Freundin', 'Kollege', 'Kollegin', 'Chef', 'Mitarbeiter',
+  'Geschichte', 'Land', 'Stadt', 'Dorf', 'Haus', 'Wohnung', 'Zimmer',
+  'Tür', 'Fenster', 'Tisch', 'Stuhl', 'Buch', 'Heft', 'Stift', 'Computer',
+  'Handy', 'Internet', 'Sprache', 'Kurs', 'Lektion', 'Übung', 'Satz',
+  'Wort', 'Buchstabe', 'Regel', 'Ausnahme', 'Gefühl', 'Gedanke', 'Idee',
+  'Hoffnung', 'Liebe', 'Freude', 'Trauer', 'Wut', 'Neid', 'Dankbarkeit',
+  'Respekt', 'Vertrauen', 'Erfolg', 'Karriere', 'Ziel', 'Traum', 'Plan',
+  'Aufgabe', 'Pflicht', 'Rolle', 'Modell', 'System', 'Prozess', 'Methode',
+  'Ergebnis', 'Anfang', 'Ende', 'Mitte', 'Ort', 'Punkt', 'Mal', 'Art',
+  'Weise', 'Fall', 'Teil', 'Mitglied', 'Paar', 'Summe', 'Wert', 'Preis',
+  'Kosten', 'Vorteil', 'Nachteil', 'Nutzen', 'Schaden', 'Risiko',
+  'Bildung', 'Wissen', 'Erfahrung', 'Fähigkeit', 'Kompetenz', 'Qualifikation',
+  'Bewerbung', 'Vorstellung', 'Präsentation', 'Besprechung', 'Termin',
+  'Hilfe', 'Rat', 'Tipp', 'Vorschlag', 'Empfehlung', 'Wahl', 'Auswahl',
+  'Entwicklung', 'Wachstum', 'Fortschritt', 'Verbesserung', 'Änderung',
+  'Garten', 'Kuchen', 'Wagen', 'Kissen', 'Essen', 'Trinken', 'Wohnen',
+  'Schreiben', 'Lesen', 'Reisen', 'Kochen', 'Lernen', 'Arbeiten'
+]);
+
+// Common conjugated/finite German verb forms (whitelist for verb detection)
+const COMMON_VERBS = new Set([
+  'ist', 'sind', 'bin', 'bist', 'seid', 'war', 'waren', 'wird', 'werden', 'wurde', 'wurden',
+  'hat', 'hast', 'haben', 'habe', 'hatte', 'hatten',
+  'kann', 'kannst', 'können', 'konnte', 'konnten', 'muss', 'musst', 'müssen', 'musste', 'mussten',
+  'darf', 'darfst', 'dürfen', 'durfte', 'durften', 'soll', 'sollst', 'sollen', 'sollte', 'sollten',
+  'will', 'willst', 'wollen', 'wollte', 'wollten', 'mag', 'magst', 'mögen', 'mochte', 'mochten',
+  'möchte', 'möchtest', 'möchten', 'weiß', 'weißt', 'wissen', 'wusste', 'wussten',
+  'geht', 'gehen', 'ging', 'gingen', 'kommt', 'kommen', 'kam', 'kamen',
+  'macht', 'machen', 'machte', 'machten', 'sagt', 'sagen', 'sagte', 'sagten',
+  'gibt', 'geben', 'gab', 'gaben', 'nimmt', 'nehmen', 'nahm', 'nahmen',
+  'sieht', 'sehen', 'sah', 'sahen', 'lässt', 'lassen', 'ließ', 'ließen',
+  'tut', 'tun', 'tat', 'taten', 'bringt', 'bringen', 'brachte', 'brachten',
+  'hält', 'halten', 'hielt', 'hielten', 'findet', 'finden', 'fand', 'fanden',
+  'bleibt', 'bleiben', 'blieb', 'blieben', 'zieht', 'ziehen', 'zog', 'zogen',
+  'setzt', 'setzen', 'setzte', 'setzten', 'stellt', 'stellen', 'stellte', 'stellten',
+  'legt', 'legen', 'legte', 'legten', 'liegt', 'liegen', 'lag', 'lagen',
+  'steht', 'stehen', 'stand', 'standen', 'nennt', 'nennen', 'nannte', 'nannten',
+  'trägt', 'tragen', 'trug', 'trugen', 'schlägt', 'schlagen', 'schlug', 'schlugen',
+  'wächst', 'wachsen', 'wuchs', 'wuchsen', 'beginnt', 'beginnen', 'begann', 'begannen',
+  'gewinnt', 'gewinnen', 'gewann', 'gewannen', 'versteht', 'verstehen', 'verstand', 'verstanden',
+  'entscheidet', 'entscheiden', 'entschied', 'entschieden', 'entwickelt', 'entwickeln', 'entwickelte', 'entwickelten',
+  'bedeutet', 'bedeuten', 'bedeutete', 'bedeuteten', 'gehört', 'gehören', 'gehörte', 'gehörten',
+  'versucht', 'versuchen', 'versuchte', 'versuchten', 'braucht', 'brauchen', 'brauchte', 'brauchten',
+  'spielt', 'spielen', 'spielte', 'spielten', 'arbeitet', 'arbeiten', 'arbeitete', 'arbeiteten',
+  'lernt', 'lernen', 'lernte', 'lernten', 'schreibt', 'schreiben', 'schrieb', 'schrieben',
+  'liest', 'lesen', 'las', 'lasen', 'spricht', 'sprechen', 'sprach', 'sprachen',
+  'wartet', 'warten', 'wartete', 'warteten', 'bleibt', 'bleiben', 'blieb', 'blieben',
+  'fehlt', 'fehlen', 'fehlte', 'fehlten', 'folgt', 'folgen', 'folgte', 'folgten',
+  'fragt', 'fragen', 'fragte', 'fragten', 'antwortet', 'antworten', 'antwortete', 'antworteten',
+  'hilft', 'helfen', 'half', 'halfen', 'denkt', 'denken', 'dachte', 'dachten',
+  'glaubt', 'glauben', 'glaubte', 'glaubten', 'hofft', 'hoffen', 'hoffte', 'hofften',
+  'kennt', 'kennen', 'kannte', 'kannten', 'läuft', 'laufen', 'lief', 'liefen',
+  'fährt', 'fahren', 'fuhr', 'fuhren', 'fliegt', 'fliegen', 'flog', 'flogen',
+  'schwimmt', 'schwimmen', 'schwamm', 'schwammen', 'singt', 'singen', 'sang', 'sangen',
+  'tanzt', 'tanzen', 'tanzte', 'tanzten', 'kocht', 'kochen', 'kochte', 'kochten',
+  'putzt', 'putzen', 'putzte', 'putzten', 'wäscht', 'waschen', 'wusch', 'wuschen',
+  'zieht', 'ziehen', 'zog', 'zogen', 'trinkt', 'trinken', 'trank', 'tranken',
+  'isst', 'essen', 'aß', 'aßen', 'schlafst', 'schlafen', 'schlief', 'schliefen',
+  'wohnt', 'wohnen', 'wohnte', 'wohnten', 'lebt', 'leben', 'lebte', 'lebten',
+  'stirbt', 'sterben', 'starb', 'starben', 'gilt', 'gelten', 'galt', 'galten',
+  'scheint', 'scheinen', 'schien', 'schienen', 'klingt', 'klingen', 'klang', 'klangen',
+  'passt', 'passen', 'passte', 'passten', 'stimmt', 'stimmen', 'stimmte', 'stimmten'
+]);
+
+function checkGermanGrammar(sentence) {
+  const issues = [];
+  let score = 100;
+  const words = sentence.trim().split(/\s+/);
+  
+  if (words.length < 3) {
+    issues.push('📏 Der Satz ist zu kurz. Versuche einen vollständigen Satz mit Subjekt, Verb und Objekt.');
+    score -= 30;
+    return { issues, score: Math.max(0, score), grade: scoreGrade(Math.max(0, score)) };
+  }
+
+  // 1. Capitalization: first word capitalized, nouns capitalized
+  if (words[0] && words[0][0] !== words[0][0].toUpperCase()) {
+    issues.push('🔤 Der Satzanfang muss großgeschrieben werden.');
+    score -= 10;
+  }
+  
+  for (let i = 1; i < words.length; i++) {
+    const raw = words[i];
+    const w = raw.replace(/[.,!?;:()""'']/g, '');
+    const capitalized = w.charAt(0).toUpperCase() + w.slice(1);
+    if (w.length > 1 && GERMAN_NOUNS.has(capitalized) && w[0] === w[0].toLowerCase()) {
+      issues.push(`🔤 "${w}" ist ein Nomen und muss großgeschrieben werden: "${capitalized}".`);
+      score -= 8;
+    }
+  }
+
+  // 2-6. Nebensatz checks: verb must be at the END after subjunctions
+  const SUB_CONJS = ['obwohl', 'weil', 'dass', 'damit', 'wenn', 'nachdem', 'bevor', 'sobald', 'solange', 'falls', 'seitdem', 'indem', 'sofern'];
+  for (const conj of SUB_CONJS) {
+    const re = new RegExp(`\\b${conj}\\s+(.+?)(?:[,.]|$)`, 'i');
+    const m = sentence.match(re);
+    if (m) {
+      const clauseWords = m[1].trim().split(/\s+/);
+      if (clauseWords.length >= 2) {
+        const lastWord = clauseWords[clauseWords.length - 1].replace(/[.,!?]/g, '');
+        const prevWord = clauseWords[clauseWords.length - 2].replace(/[.,!?]/g, '');
+        const hasVerb = clauseWords.some(w => isGermanVerb(w.replace(/[.,!?]/g, '')));
+        // Modal verb at end needs an infinitive before it: "... sein kann"
+        if (MODAL_VERBS.includes(lastWord.toLowerCase()) && !isInfinitiv(prevWord)) {
+          issues.push(`📐 Nach dem Modalverb "${lastWord}" fehlt der Infinitiv. Z.B.: "Obwohl das Leben schwierig **sein** ${lastWord}".`);
+          score -= 15;
+          continue;
+        }
+        if (hasVerb && !isGermanVerb(lastWord)) {
+          const verbsIn = clauseWords.filter(w => isGermanVerb(w.replace(/[.,!?]/g, '')));
+          if (verbsIn.length > 0 && verbsIn[0] !== lastWord) {
+            issues.push(`📐 Nach "${conj}" steht das konjugierte Verb am ENDE des Nebensatzes. Du schriebst "... ${clauseWords.join(' ')}" — versuche: "... ${conj} ${clauseWords.filter(w => w !== verbsIn[0]).join(' ')} ${verbsIn[0]}".`);
+            score -= 15;
+          }
+        }
+      }
+    }
+  }
+
+  // 7. Verb position in main clause (V2 rule): only when sentence starts with a subject pronoun
+  const firstWord = words[0].replace(/[.,!?;:()""'']/g, '');
+  const mainClause = sentence.split(/[,;]/)[0].trim();
+  const mainWords = mainClause.split(/\s+/);
+  if (isGermanPronoun(firstWord) && !isGermanArticle(firstWord) && mainWords.length >= 3) {
+    const second = mainWords[1].replace(/[.,!?]/g, '');
+    if (!isGermanVerb(second) && !isGermanParticle(second) && !isGermanPrep(second) && !isGermanArticle(second)) {
+      issues.push('📐 Im Hauptsatz steht das konjugierte Verb an zweiter Position. Z.B.: "Ich **gehe** heute einkaufen." statt "Ich heute gehe einkaufen."');
+      score -= 10;
+    }
+  }
+
+  // 8. Check "um ... zu" + Infinitiv
+  if (sentence.match(/\bum\b/i) && sentence.match(/\bzu\b/i)) {
+    const umIdx = sentence.search(/\bum\b/i);
+    const zuIdx = sentence.search(/\bzu\b/i);
+    if (umIdx < zuIdx) {
+      const afterZu = sentence.slice(zuIdx + 2).trim().split(/\s+/)[0];
+      if (afterZu && !afterZu.endsWith('en')) {
+        issues.push('📐 Nach "um ... zu" kommt der Infinitiv (Verb mit -en) ans Ende. Z.B.: "um Deutsch zu **lernen**".');
+        score -= 10;
+      }
+    }
+  }
+
+  // 9. Separable verbs: only flag CONJUGATED forms (not infinitives)
+  const separablePrefixes = ['auf', 'ab', 'an', 'aus', 'bei', 'ein', 'fest', 'her', 'hin', 'los', 'mit', 'nach', 'vor', 'weg', 'zu', 'zurück', 'zusammen'];
+  for (const prefix of separablePrefixes) {
+    // conjugated form: prefix + stem ending in e/st/t/te (not -en infinitive)
+    const regex = new RegExp(`\\b(${prefix})([a-zäöüß]+)([est]{1,2}|t|te)$`, 'i');
+    const match = sentence.match(regex);
+    if (match) {
+      const full = match[0];
+      const stem = match[2] + match[3];
+      if (isGermanVerb(stem) || stem.length >= 3) {
+        issues.push(`📐 "${full}" ist ein trennbares Verb. Im Hauptsatz: "Ich ${prefix}${match[2]} ... ${match[3] ? '' : ''}" — das Präfix "${prefix}" steht am Satzende: "Ich ${stem} ... ${prefix}".`);
+        score -= 8;
+      }
+    }
+  }
+
+  // 10. Punctuation and spacing
+  if (sentence.match(/[.,!?]{2,}/)) {
+    issues.push('✖️ Doppelte Satzzeichen entfernen.');
+    score -= 5;
+  }
+  if (sentence.match(/[a-zäöüß][A-ZÄÖÜ]/)) {
+    issues.push('✖️ Fehlendes Leerzeichen zwischen Wörtern?');
+    score -= 5;
+  }
+
+  // 11. Missing comma before subjunctions
+  for (const conj of SUB_CONJS) {
+    const re = new RegExp(`[a-zäöüß]\\s+${conj}\\b`, 'i');
+    if (re.test(sentence) && !new RegExp(`,\\s+${conj}\\b`, 'i').test(sentence)) {
+      issues.push(`🔖 Vor "${conj}" steht ein Komma: "... , ${conj} ...".`);
+      score -= 5;
+    }
+  }
+
+  // Select proper score: subtract deductions, THEN add bonuses, cap at 100
+  if (words.length >= 8) score += 5;
+  if (words.length >= 12) score += 5;
+
+  const b2Words = ['obwohl', 'während', 'einerseits', 'andererseits', 'aufgrund', 'sowohl', 'damit', 'dennoch', 'trotzdem', 'allerdings', 'jedoch', 'nämlich', 'schließlich', 'außerdem', 'meiner'];
+  for (const bw of b2Words) {
+    if (sentence.toLowerCase().includes(bw)) {
+      score += 8;
+      break; // max one bonus per sentence
+    }
+  }
+
+  score = Math.max(0, Math.min(100, score));
+  if (issues.length > 0 && score >= 90) score = Math.min(score, 89);
+  return { issues, score, grade: scoreGrade(score) };
+}
+
+function isGermanVerb(w) {
+  const wc = w.replace(/[.,!?;:()""'']/g, '').toLowerCase();
+  if (wc.length < 2) return false;
+  // Exact whitelist match (conjugated forms + common verbs)
+  if (COMMON_VERBS.has(wc)) return true;
+  // Infinitives / plural present: verbs end in -en/-eln/-ern.
+  // But capitalized words that are known nouns are NOT verbs ("das Leben", "viele Menschen").
+  const capitalCheck = w.charAt(0).toUpperCase() + wc.slice(1);
+  if (GERMAN_NOUNS.has(capitalCheck) && w[0] === w[0].toUpperCase()) return false;
+  return wc.endsWith('en') || wc.endsWith('eln') || wc.endsWith('ern');
+}
+
+function isGermanParticle(w) {
+  const wc = w.replace(/[.,!?]/g, '').toLowerCase();
+  return ['auch', 'doch', 'ja', 'wohl', 'gerne', 'leider', 'eigentlich', 'natürlich', 'nur', 'auch', 'nicht'].includes(wc);
+}
+
+const MODAL_VERBS = ['kann', 'kannst', 'können', 'könnte', 'könnten', 'muss', 'musst', 'müssen', 'müsste', 'müssten', 'will', 'willst', 'wollen', 'wollte', 'wollten', 'soll', 'sollst', 'sollen', 'sollte', 'sollten', 'darf', 'darfst', 'dürfen', 'dürfte', 'dürften', 'mag', 'magst', 'mögen', 'mochte', 'möchte', 'möchtest', 'möchten'];
+
+function isInfinitiv(w) {
+  const wc = w.replace(/[.,!?]/g, '').toLowerCase();
+  if (wc === 'sein' || wc === 'tun' || wc === 'werden' || wc === 'haben') return true;
+  // irregular infinitives ending differently
+  return wc.endsWith('en') || wc.endsWith('eln') || wc.endsWith('ern');
+}
+
+function isGermanPrep(w) {
+  const wc = w.replace(/[.,!?]/g, '').toLowerCase();
+  return ['in', 'im', 'ins', 'an', 'am', 'ans', 'auf', 'bei', 'mit', 'nach', 'von', 'vom', 'zum', 'zur', 'aus', 'durch', 'für', 'gegen', 'ohne', 'um', 'über', 'unter', 'vor', 'zwischen', 'seit', 'bis', 'entlang', 'außer', 'gegenüber', 'laut', 'gemäß', 'trotz', 'während', 'wegen', 'statt', 'innerhalb', 'außerhalb', 'oberhalb', 'unterhalb', 'diesseits', 'jenseits'].includes(wc);
+}
+
+function isGermanArticle(w) {
+  const wc = w.replace(/[.,!?]/g, '').toLowerCase();
+  return ['der', 'die', 'das', 'den', 'dem', 'des', 'ein', 'eine', 'einen', 'einem', 'eines', 'kein', 'keine', 'keinen', 'keinem', 'keines', 'mein', 'meine', 'meinen', 'meinem', 'meines', 'dein', 'deine', 'deinen', 'deinem', 'deines', 'sein', 'seine', 'seinen', 'seinem', 'seines', 'ihr', 'ihre', 'ihren', 'ihrem', 'ihres', 'unser', 'unsere', 'unseren', 'unserem', 'unseres', 'euer', 'eure', 'euren', 'eurem', 'eures', 'dieser', 'diese', 'dieses', 'diesen', 'diesem', 'jener', 'jene', 'jenes', 'jenen', 'jenem', 'welcher', 'welche', 'welches', 'welchen', 'welchem'].includes(wc);
+}
+
+function isGermanPronoun(w) {
+  const wc = w.replace(/[.,!?]/g, '').toLowerCase();
+  return ['ich', 'du', 'er', 'sie', 'es', 'wir', 'ihr', 'man', 'mich', 'mir', 'dich', 'dir', 'ihn', 'ihm', 'uns', 'euch', 'sich', 'jeder', 'jede', 'jedes', 'alle', 'viele', 'einige', 'manche', 'beide', 'solche', 'dasselbe', 'dieselbe', 'derselbe', 'dies', 'das'].includes(wc);
+}
+
+function isGermanAdj(w) {
+  const wc = w.replace(/[.,!?]/g, '').toLowerCase();
+  const commonAdj = ['gut', 'schlecht', 'groß', 'klein', 'neu', 'alt', 'jung', 'wichtig', 'richtig', 'falsch', 'schön', 'hässlich', 'teuer', 'billig', 'hoch', 'niedrig', 'schnell', 'langsam', 'früh', 'spät', 'lang', 'kurz', 'breit', 'eng', 'tief', 'flach', 'schwer', 'leicht', 'hart', 'weich', 'warm', 'kalt', 'heiß', 'kühl', 'sauber', 'schmutzig', 'reich', 'arm', 'glücklich', 'traurig', 'sicher', 'gefährlich', 'ruhig', 'laut', 'fleißig', 'faul', 'klug', 'dumm', 'lustig', 'ernst', 'freundlich', 'böse', 'ehrlich', 'höflich', 'stark', 'schwach', 'gesund', 'krank', 'möglich', 'unmöglich', 'einfach', 'schwierig', 'kompliziert', 'verfügbar', 'fertig', 'bereit', 'klar', 'dunkel', 'hell', 'bunt', 'leer', 'voll', 'offen', 'geschlossen', 'aktiv', 'passiv', 'modern', 'traditionell', 'typisch', 'einzigartig', 'beliebt', 'bekannt', 'fremd', 'eigen'];
+  return commonAdj.includes(wc);
+}
+
+function scoreGrade(score) {
+  if (score >= 90) return 'a';
+  if (score >= 75) return 'b';
+  if (score >= 55) return 'c';
+  return 'd';
+}
+
+// ===== GAME STATE =====
 let currentTopic = 'topic1';
-let savedSentences = JSON.parse(localStorage.getItem('b2_sentences') || '[]');
+let savedSentences = JSON.parse(localStorage.getItem('df_sentences') || '[]');
+let gameState = JSON.parse(localStorage.getItem('df_state') || '{"xp":0,"level":1,"streak":0}');
+let soundOn = localStorage.getItem('df_sound') !== 'off';
 
 // ===== RENDER =====
-function renderModules() {
-  const nav = document.getElementById('moduleNav');
-  nav.innerHTML = DATA.modules.map(m =>
-    `<button class="${m.id === currentModule ? 'active' : ''}" onclick="selectModule('${m.id}')">${m.name}</button>`
-  ).join('');
-}
-
 function renderTopics() {
-  const nav = document.getElementById('topicNav');
-  const module = DATA.modules.find(m => m.id === currentModule);
-  nav.innerHTML = module.topics.map(tid => {
-    const t = DATA.topics[tid];
-    return `<button class="${tid === currentTopic ? 'active' : ''}" onclick="selectTopic('${tid}')">${t.name}</button>`;
-  }).join('');
-}
-
-function renderTopicInfo() {
-  const t = DATA.topics[currentTopic];
-  document.getElementById('topicTitle').textContent = `${t.name} — ${t.subtitle}`;
-  document.getElementById('subtopicsList').innerHTML = t.subtopics.map(s =>
-    `<span class="subtopic-chip">${s}</span>`
-  ).join('');
-}
-
-function renderVocab() {
-  const t = DATA.topics[currentTopic];
-  const list = document.getElementById('vocabList');
-  const count = document.getElementById('vocabCount');
-  list.innerHTML = t.vocab.map(([de, en]) =>
-    `<div class="vocab-item" onclick="insertVocab('${de.replace(/'/g, "\\'")}')">
-      <span class="de">${de}</span>
-      <span class="en">${en}</span>
+  const grid = document.getElementById('topicGrid');
+  grid.innerHTML = Object.entries(DATA.topics).map(([id, t]) =>
+    `<div class="topic-card ${id === currentTopic ? 'active' : ''}" onclick="selectTopic('${id}')">
+      <div class="topic-emoji">${t.emoji}</div>
+      <div class="topic-name">${t.name}</div>
+      <div class="topic-sub">${t.subtopics.length} Teilbereiche</div>
     </div>`
   ).join('');
-  count.textContent = `(${t.vocab.length} Wörter)`;
+}
+
+function selectTopic(id) {
+  currentTopic = id;
+  renderTopics();
+  const t = DATA.topics[id];
+  document.getElementById('gameTopicTitle').textContent = t.name;
+  document.getElementById('gameTopicEmoji').textContent = t.emoji;
+  document.getElementById('vocabCountBadge').textContent = `${t.vocab.length} Wörter`;
+  document.getElementById('subtopicChips').innerHTML = t.subtopics.map(s => `<span style="padding:2px 7px;background:var(--surface3);border-radius:12px;font-size:0.6rem;color:var(--text-dim);">${s}</span>`).join('');
+  document.getElementById('vocabChips').innerHTML = t.vocab.map(([de, en]) =>
+    `<span class="vocab-chip" onclick="insertVocab('${de.replace(/'/g, "\\'")}')">
+      <span class="de">${de}</span> <span class="en">${en}</span>
+    </span>`
+  ).join('');
+  document.getElementById('gameArea').classList.remove('hidden');
+  renderSaved();
 }
 
 function renderStructures() {
-  const container = document.getElementById('structureButtons');
-  container.innerHTML = DATA.structures.map(s =>
-    `<button class="structure-btn" onclick="insertStructure('${s.name}', '${s.example.replace(/'/g, "\\'")}')" title="${s.desc}: ${s.example}">${s.name}</button>`
+  document.getElementById('structStrip').innerHTML = DATA.structures.map(s =>
+    `<button class="struct-btn" onclick="insertStructure('${s.name}', '${s.ex.replace(/'/g, "\\'")}')" title="${s.desc}">${s.name}</button>`
   ).join('');
 }
 
 function renderPrompts() {
-  const list = document.getElementById('promptsList');
-  list.innerHTML = DATA.prompts.map((p, i) =>
+  document.getElementById('promptGrid').innerHTML = DATA.prompts.map((p, i) =>
     `<div class="prompt-card" onclick="openPrompt(${i})">
-      <div class="prompt-num">Schreibimpuls #${i + 1}</div>
+      <div class="p-num">Frage #${i + 1}</div>
       <div>${p}</div>
     </div>`
   ).join('');
@@ -639,19 +744,19 @@ function renderPrompts() {
 
 function renderSaved() {
   const container = document.getElementById('savedList');
-  const count = document.getElementById('savedCount');
+  const badge = document.getElementById('savedCountBadge');
   if (savedSentences.length === 0) {
-    container.innerHTML = `<div class="empty-state"><div class="big-icon">📝</div><p>Noch keine Sätze gespeichert. Schreibe einen Satz und klicke auf "Satz speichern"!</p></div>`;
-    count.textContent = '';
+    container.innerHTML = '<div class="empty-state"><div class="big-icon">📝</div><p>Noch keine Sätze gespeichert. Los geht\'s!</p></div>';
+    badge.textContent = '0';
     return;
   }
-  count.textContent = `(${savedSentences.length} Sätze)`;
+  badge.textContent = savedSentences.length;
   container.innerHTML = `<ul class="saved-list">${savedSentences.map((s, i) => `
     <li class="saved-item">
-      <button class="delete-btn" onclick="deleteSentence(${i})" title="Löschen">✕</button>
-      <div class="saved-text">${escapeHtml(s.text)}</div>
-      <div class="saved-meta">
-        <span class="tag">${s.topic}</span>
+      <button class="s-delete" onclick="deleteSentence(${i})">✕</button>
+      <div class="s-text">${escHtml(s.text)}</div>
+      <div class="s-meta">
+        <span class="s-tag">${escHtml(s.topic)}</span>
         <span>${s.date}</span>
       </div>
     </li>
@@ -659,25 +764,6 @@ function renderSaved() {
 }
 
 // ===== ACTIONS =====
-function selectModule(id) {
-  currentModule = id;
-  const module = DATA.modules.find(m => m.id === id);
-  currentTopic = module.topics[0];
-  renderModules();
-  renderTopics();
-  renderTopicInfo();
-  renderVocab();
-  renderSaved();
-}
-
-function selectTopic(id) {
-  currentTopic = id;
-  renderTopics();
-  renderTopicInfo();
-  renderVocab();
-  renderSaved();
-}
-
 function insertVocab(word) {
   const input = document.getElementById('sentenceInput');
   input.value += (input.value ? ' ' : '') + word;
@@ -689,41 +775,140 @@ function insertStructure(name, example) {
   const template = name.includes('...') ? name.replace('...', '___') : name + ' ...';
   input.value += (input.value ? ' ' : '') + template;
   input.focus();
-  showToast(`💡 ${example}`);
+  showToast('💡 ' + example, 3500);
 }
 
+function clearInput() {
+  document.getElementById('sentenceInput').value = '';
+  document.getElementById('sentenceInput').focus();
+  document.getElementById('feedbackBox').className = 'feedback-box';
+}
+
+// ===== GRAMMAR CHECK =====
+function checkSentence() {
+  const input = document.getElementById('sentenceInput');
+  const text = input.value.trim();
+  const fb = document.getElementById('feedbackBox');
+  const fbTitle = document.getElementById('fbTitle');
+  const fbList = document.getElementById('fbList');
+  const fbScore = document.getElementById('fbScore');
+
+  if (!text) {
+    fb.className = 'feedback-box help show';
+    fbTitle.innerHTML = '❓ Kein Text!';
+    fbList.innerHTML = '<li>Schreibe zuerst einen Satz, dann prüfen wir gemeinsam.</li>';
+    fbScore.textContent = '';
+    playSound('error');
+    return;
+  }
+
+  const result = checkGermanGrammar(text);
+  fbList.innerHTML = result.issues.map(i => `<li>${i}</li>`).join('');
+
+  if (result.issues.length === 0) {
+    fb.className = 'feedback-box good show';
+    fbTitle.innerHTML = '🎉 Sehr gut! Grammatisch stimmig!';
+    playSound('success');
+  } else if (result.score >= 75) {
+    fb.className = 'feedback-box help show';
+    fbTitle.innerHTML = '👍 Fast perfekt! Kleine Korrekturen:';
+    playSound('warning');
+  } else {
+    fb.className = 'feedback-box warn show';
+    fbTitle.innerHTML = '🤔 Schauen wir uns das genauer an:';
+    playSound('error');
+  }
+
+  fbScore.textContent = `Punktzahl: ${result.score}/100 — ${gradeText(result.grade)}`;
+  fbScore.className = 'fb-score ' + result.grade;
+
+  // XP for checking
+  addXP(Math.round(result.score / 10));
+
+  // Auto-insert suggestion for obwohl/weil issues
+  if (result.issues.some(i => i.includes('Nebensatz'))) {
+    fb.innerHTML += '<div style="margin-top:6px;font-size:0.75rem;color:var(--text-muted);">💡 Tipp: Setze das Verb ans Satzende des Nebensatzes.</div>';
+  }
+}
+
+function gradeText(grade) {
+  return { a: 'Ausgezeichnet! ⭐', b: 'Gut gemacht!', c: 'Okay, übe weiter!', d: 'Noch üben!' }[grade];
+}
+
+// ===== XP & LEVELS =====
+function addXP(amount) {
+  if (amount <= 0) return;
+  gameState.xp += amount;
+  const levelUp = checkLevelUp();
+  localStorage.setItem('df_state', JSON.stringify(gameState));
+  updateHeader();
+  if (levelUp) showLevelUpToast();
+}
+
+function checkLevelUp() {
+  const xpNeeded = gameState.level * 100;
+  if (gameState.xp >= xpNeeded) {
+    gameState.xp -= xpNeeded;
+    gameState.level++;
+    gameState.streak++;
+    localStorage.setItem('df_state', JSON.stringify(gameState));
+    confetti();
+    showToast('🎉 LEVEL UP! Du bist jetzt Level ' + gameState.level + '!', 4000);
+    return true;
+  }
+  return false;
+}
+
+function updateHeader() {
+  document.getElementById('levelDisplay').textContent = gameState.level;
+  document.getElementById('levelLabel').textContent = gameState.level;
+  document.getElementById('xpDisplay').textContent = gameState.xp;
+  document.getElementById('streakDisplay').textContent = gameState.streak;
+  const total = gameState.level * 100;
+  document.getElementById('levelFill').style.width = Math.min(100, (gameState.xp / total) * 100) + '%';
+  document.getElementById('xpProgress').textContent = `${gameState.xp}/${total} XP`;
+}
+
+function showLevelUpToast() {
+  const t = document.getElementById('achieveToast');
+  document.getElementById('achIcon').textContent = '🏆';
+  document.getElementById('achTitle').textContent = 'LEVEL UP!';
+  document.getElementById('achDesc').textContent = `Du bist jetzt Level ${gameState.level}! Weiter so!`;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 4000);
+}
+
+// ===== SAVE =====
 function saveSentence() {
   const input = document.getElementById('sentenceInput');
   const text = input.value.trim();
-  if (!text) { showToast('⚠️ Bitte schreibe zuerst einen Satz!'); return; }
-  if (text.length < 3) { showToast('⚠️ Der Satz ist zu kurz.'); return; }
+  if (!text) { showToast('⚠️ Bitte schreibe zuerst einen Satz!', 2500); return; }
   const t = DATA.topics[currentTopic];
   savedSentences.unshift({
     text: text,
     topic: t.name,
     date: new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' })
   });
-  localStorage.setItem('b2_sentences', JSON.stringify(savedSentences));
+  localStorage.setItem('df_sentences', JSON.stringify(savedSentences));
   input.value = '';
+  document.getElementById('feedbackBox').className = 'feedback-box';
   renderSaved();
-  showToast('✅ Satz gespeichert!');
-}
-
-function clearInput() {
-  document.getElementById('sentenceInput').value = '';
-  document.getElementById('sentenceInput').focus();
+  addXP(15);
+  playSound('save');
+  showToast('✅ Satz gespeichert! +15 XP', 2500);
 }
 
 function deleteSentence(index) {
   savedSentences.splice(index, 1);
-  localStorage.setItem('b2_sentences', JSON.stringify(savedSentences));
+  localStorage.setItem('df_sentences', JSON.stringify(savedSentences));
   renderSaved();
-  showToast('🗑️ Satz gelöscht');
+  showToast('🗑️ Satz gelöscht', 2000);
 }
 
+// ===== PROMPTS =====
 function openPrompt(index) {
   const prompt = DATA.prompts[index];
-  document.getElementById('promptQuestion').textContent = `💡 ${prompt}`;
+  document.getElementById('promptQuestion').textContent = '💡 ' + prompt;
   document.getElementById('promptActive').classList.add('show');
   document.getElementById('promptInput').value = '';
   document.getElementById('promptInput').focus();
@@ -732,44 +917,104 @@ function openPrompt(index) {
 function savePromptAnswer() {
   const input = document.getElementById('promptInput');
   const text = input.value.trim();
-  if (!text) { showToast('⚠️ Bitte schreibe zuerst eine Antwort!'); return; }
+  if (!text) { showToast('⚠️ Bitte schreibe zuerst eine Antwort!', 2500); return; }
   const promptQ = document.getElementById('promptQuestion').textContent.replace('💡 ', '');
   savedSentences.unshift({
-    text: `[Antwort auf: ${promptQ}] ${text}`,
+    text: `[Antwort: ${promptQ}] ${text}`,
     topic: DATA.topics[currentTopic].name,
     date: new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' })
   });
-  localStorage.setItem('b2_sentences', JSON.stringify(savedSentences));
+  localStorage.setItem('df_sentences', JSON.stringify(savedSentences));
   document.getElementById('promptActive').classList.remove('show');
   renderSaved();
-  showToast('✅ Antwort gespeichert!');
+  addXP(25);
+  playSound('save');
+  showToast('✅ Antwort gespeichert! +25 XP', 2500);
 }
 
 function closePrompt() {
   document.getElementById('promptActive').classList.remove('show');
 }
 
+// ===== TOAST =====
+function showToast(msg, duration) {
+  const t = document.getElementById('achieveToast');
+  document.getElementById('achIcon').textContent = '✨';
+  document.getElementById('achTitle').textContent = msg;
+  document.getElementById('achDesc').textContent = '';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), duration || 3000);
+}
+
+// ===== SOUND =====
+function toggleSound() {
+  soundOn = !soundOn;
+  localStorage.setItem('df_sound', soundOn ? 'on' : 'off');
+  document.getElementById('soundBtn').textContent = soundOn ? '🔊' : '🔇';
+}
+
+function playSound(type) {
+  if (!soundOn) return;
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    gain.gain.setValueAtTime(0.1, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+    if (type === 'success') { osc.frequency.setValueAtTime(523.25, ctx.currentTime); }
+    else if (type === 'warning') { osc.frequency.setValueAtTime(392, ctx.currentTime); }
+    else if (type === 'error') { osc.frequency.setValueAtTime(196, ctx.currentTime); }
+    else if (type === 'save') { osc.frequency.setValueAtTime(659.25, ctx.currentTime); }
+    osc.start();
+    osc.stop(ctx.currentTime + 0.3);
+  } catch (e) {}
+}
+
+// ===== CONFETTI =====
+function confetti() {
+  const colors = ['#88A0F8', '#E03028', '#F0C040', '#40B060', '#2040D8', '#F06050'];
+  for (let i = 0; i < 40; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = Math.random() * 100 + 'vw';
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.animationDelay = Math.random() * 0.5 + 's';
+    document.body.appendChild(piece);
+    setTimeout(() => piece.remove(), 3500);
+  }
+}
+
+// ===== HELP =====
 function escapeHtml(text) {
   const div = document.createElement('div');
   div.textContent = text;
   return div.innerHTML;
 }
-
-function showToast(msg) {
-  const toast = document.getElementById('toast');
-  toast.textContent = msg;
-  toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 2500);
-}
+const escHtml = escapeHtml;
 
 // ===== INIT =====
-renderModules();
 renderTopics();
-renderTopicInfo();
-renderVocab();
 renderStructures();
 renderPrompts();
 renderSaved();
+updateHeader();
+selectTopic('topic1');
+document.getElementById('soundBtn').textContent = soundOn ? '🔊' : '🔇';
+
+// Show help on first visit
+if (!localStorage.getItem('df_visited')) {
+  setTimeout(() => document.getElementById('helpOverlay').classList.add('show'), 500);
+  localStorage.setItem('df_visited', '1');
+}
+
+// Keyboard shortcut: Ctrl+Enter to check
+document.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+    checkSentence();
+  }
+});
 </script>
 </body>
 </html>
