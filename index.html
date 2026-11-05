@@ -169,6 +169,268 @@
 
   .sound-toggle { background: none; border: 1px solid var(--border); color: var(--text-dim); padding: 3px 7px; border-radius: 5px; cursor: pointer; font-size: 0.95rem; transition: all 0.15s; }
   .sound-toggle:hover { border-color: var(--primary); color: var(--primary); }
+
+  /* ===== MODE TABS ===== */
+  .mode-tabs {
+    display: flex;
+    gap: 8px;
+    max-width: 1100px;
+    margin: 12px auto 0;
+    padding: 0 12px;
+  }
+  .mode-tab {
+    flex: 1;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-dim);
+    border-radius: 10px 10px 0 0;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 700;
+    transition: all 0.2s;
+    -webkit-tap-highlight-color: transparent;
+    text-align: center;
+  }
+  .mode-tab:hover { color: var(--text); border-color: var(--surface3); }
+  .mode-tab.active {
+    background: var(--surface);
+    border-color: var(--primary-glow);
+    color: var(--primary-glow);
+    box-shadow: 0 -2px 12px rgba(136,160,248,0.15);
+  }
+  .mode-panel { display: none; }
+  .mode-panel.active { display: block; animation: slideUp 0.3s ease; }
+
+  /* ===== QUIZ / TEST ===== */
+  .quiz-setup { text-align: center; }
+  .quiz-setup .qz-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 4px; }
+  .quiz-setup .qz-sub { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 14px; }
+  .quiz-topic-chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 16px; }
+  .quiz-topic-chip {
+    padding: 8px 14px;
+    background: var(--surface2);
+    border: 2px solid var(--border);
+    border-radius: 22px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    transition: all 0.15s;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .quiz-topic-chip.on { border-color: var(--primary-glow); color: var(--primary-glow); background: rgba(136,160,248,0.1); }
+  .quiz-start-btn {
+    padding: 14px 40px;
+    background: linear-gradient(135deg, #E03028, #B02018);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .quiz-start-btn:active { transform: scale(0.96); }
+  .quiz-progress { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .quiz-progress .q-count { font-size: 0.8rem; color: var(--text-muted); font-weight: 700; white-space: nowrap; }
+  .quiz-progress .qp-bar { flex: 1; height: 6px; background: var(--surface3); border-radius: 3px; overflow: hidden; }
+  .quiz-progress .qp-fill { height: 100%; background: linear-gradient(90deg, var(--primary-glow), var(--accent)); border-radius: 3px; transition: width 0.4s ease; }
+  .quiz-progress .qp-score { font-size: 0.8rem; color: var(--gold); font-weight: 700; white-space: nowrap; }
+
+  .quiz-question { display: none; }
+  .quiz-question.show { display: block; animation: slideUp 0.3s ease; }
+  .qz-qtype { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: var(--gold); font-weight: 800; margin-bottom: 6px; }
+  .qz-qtext { font-size: 1.05rem; line-height: 1.6; margin-bottom: 12px; }
+  .qz-qtext .blank { color: var(--accent-glow); font-weight: 800; text-decoration: underline; text-underline-offset: 3px; }
+
+  .qz-options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  @media (max-width: 500px) { .qz-options { grid-template-columns: 1fr; } }
+  .qz-opt {
+    padding: 12px 14px;
+    background: var(--surface2);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: all 0.15s;
+    text-align: left;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .qz-opt:active { transform: scale(0.97); }
+  .qz-opt.correct { border-color: var(--green); background: rgba(64,176,96,0.15); color: var(--green-glow); }
+  .qz-opt.wrong { border-color: var(--accent); background: rgba(224,48,40,0.12); color: var(--accent-glow); }
+  .qz-opt.disabled { pointer-events: none; }
+
+  .qz-input { display: flex; gap: 8px; }
+  .qz-input input {
+    flex: 1;
+    padding: 12px 14px;
+    background: var(--surface2);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-size: 1rem;
+    font-family: inherit;
+  }
+  .qz-input input:focus { outline: none; border-color: var(--primary-glow); }
+  .qz-submit {
+    padding: 12px 20px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .qz-submit:active { transform: scale(0.95); }
+
+  /* Scramble builder */
+  .qz-scramble { display: flex; flex-direction: column; gap: 10px; }
+  .qz-target { min-height: 56px; padding: 12px; background: rgba(136,160,248,0.08); border: 2px dashed var(--primary-glow); border-radius: 10px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .qz-pool { display: flex; flex-wrap: wrap; gap: 6px; }
+  .scramble-word {
+    padding: 8px 12px;
+    background: var(--surface3);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.15s;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+  .scramble-word:active { transform: scale(0.92); }
+  .scramble-word.used { opacity: 0.25; pointer-events: none; }
+  .scramble-word.placed { background: var(--primary); color: white; }
+
+  .qz-feedback {
+    display: none;
+    margin-top: 12px;
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+  .qz-feedback.show { display: block; animation: slideUp 0.25s ease; }
+  .qz-feedback.right { background: rgba(64,176,96,0.12); border: 1px solid rgba(64,176,96,0.35); color: var(--green-glow); }
+  .qz-feedback.wrong { background: rgba(224,48,40,0.1); border: 1px solid rgba(224,48,40,0.35); color: var(--accent-glow); }
+
+  .qz-next {
+    display: none;
+    margin-top: 12px;
+    width: 100%;
+    padding: 12px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .qz-next.show { display: block; }
+
+  .quiz-result { display: none; text-align: center; }
+  .quiz-result.show { display: block; animation: levelUp 0.5s ease; }
+  .qz-result-icon { font-size: 3rem; margin-bottom: 6px; }
+  .qz-result-score { font-size: 2.4rem; font-weight: 800; background: linear-gradient(135deg, var(--primary-glow), var(--accent-glow)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .qz-result-text { font-size: 1.05rem; font-weight: 600; margin-bottom: 4px; }
+  .qz-result-detail { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px; }
+  .qz-again {
+    padding: 12px 32px;
+    background: linear-gradient(135deg, #E03028, #B02018);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .qz-again:active { transform: scale(0.96); }
+
+  /* ===== FLASHCARDS ===== */
+  .blitz-setup { text-align: center; }
+  .blitz-topic-chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 16px; }
+  .blitz-topic-chip {
+    padding: 8px 14px;
+    background: var(--surface2);
+    border: 2px solid var(--border);
+    border-radius: 22px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    transition: all 0.15s;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .blitz-topic-chip.on { border-color: var(--primary-glow); color: var(--primary-glow); background: rgba(136,160,248,0.1); }
+  .blitz-start-btn {
+    padding: 14px 40px;
+    background: linear-gradient(135deg, #2040D8, #1a2f9e);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .blitz-start-btn:active { transform: scale(0.96); }
+
+  .blitz-card-wrap {
+    max-width: 420px;
+    margin: 0 auto;
+    perspective: 1000px;
+  }
+  .blitz-card {
+    position: relative;
+    width: 100%;
+    min-height: 200px;
+    cursor: pointer;
+    transform-style: preserve-3d;
+    transition: transform 0.4s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .blitz-card.flipped { transform: rotateY(180deg); }
+  .blitz-face {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    backface-visibility: hidden;
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+  }
+  .blitz-front {
+    background: linear-gradient(135deg, var(--surface2), var(--surface3));
+    border: 2px solid var(--primary-glow);
+  }
+  .blitz-back {
+    background: linear-gradient(135deg, var(--surface2), #1a2448);
+    border: 2px solid var(--gold);
+    transform: rotateY(180deg);
+  }
+  .blitz-face .b-word { font-size: 1.5rem; font-weight: 800; }
+  .blitz-face .b-hint { font-size: 0.75rem; color: var(--text-muted); }
+  .blitz-face .b-flag { font-size: 1.2rem; }
+
+  .blitz-actions { display: flex; gap: 10px; margin-top: 14px; max-width: 420px; margin-left: auto; margin-right: auto; }
+  .blitz-actions button { flex: 1; padding: 12px; border: none; border-radius: 10px; font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: all 0.15s; }
+  .blitz-actions button:active { transform: scale(0.95); }
+  .b-know { background: linear-gradient(135deg, #40B060, #208040); color: white; }
+  .b-again { background: linear-gradient(135deg, #E03028, #B02018); color: white; }
+  .blitz-progress { text-align: center; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px; }
+  .blitz-done { text-align: center; padding: 20px; }
+  .blitz-done .b-icon { font-size: 2.5rem; margin-bottom: 6px; }
+  .blitz-done h3 { font-size: 1.15rem; margin-bottom: 4px; }
+  .blitz-done p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 14px; }
+  .blitz-again { padding: 10px 28px; background: var(--primary); color: white; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; }
 </style>
 </head>
 <body>
@@ -211,7 +473,16 @@
   </div>
 </header>
 
+<div class="mode-tabs">
+  <button class="mode-tab active" id="tab-practice" onclick="switchMode('practice')">✏️ Üben</button>
+  <button class="mode-tab" id="tab-test" onclick="switchMode('test')">🎯 Test-Simulator</button>
+  <button class="mode-tab" id="tab-blitz" onclick="switchMode('blitz')">🃏 Vokabel-Blitz</button>
+</div>
+
 <div class="container">
+
+  <!-- ===== PRACTICE MODE (existing) ===== -->
+  <div class="mode-panel active" id="panel-practice">
   <div class="topic-grid" id="topicGrid"></div>
 
   <div class="main-layout">
@@ -269,6 +540,82 @@
             <button class="btn-outline" onclick="closePrompt()">Abbrechen</button>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+  </div><!-- /panel-practice -->
+
+  <!-- ===== TEST MODE ===== -->
+  <div class="mode-panel" id="panel-test">
+    <div class="game-area">
+      <div class="quiz-setup" id="quizSetup">
+        <div class="qz-title">🎯 Test-Simulator</div>
+        <div class="qz-sub">Wie in der Klasse: 10 Fragen aus den Themen, die du auswählst.</div>
+        <div class="quiz-topic-chips" id="quizTopicChips"></div>
+        <button class="quiz-start-btn" onclick="startQuiz()">🚀 Test starten</button>
+      </div>
+
+      <div class="quiz-progress" id="quizProgress" style="display:none;">
+        <span class="q-count" id="qCount">Frage 1/10</span>
+        <div class="qp-bar"><div class="qp-fill" id="qpFill"></div></div>
+        <span class="qp-score" id="qpScore">0 P.</span>
+      </div>
+
+      <div class="quiz-question" id="quizQuestion">
+        <div class="qz-qtype" id="qzType"></div>
+        <div class="qz-qtext" id="qzText"></div>
+        <div id="qzAnswerArea"></div>
+        <div class="qz-feedback" id="qzFeedback"></div>
+        <button class="qz-next" id="qzNext" onclick="nextQuestion()">Weiter →</button>
+      </div>
+
+      <div class="quiz-result" id="quizResult">
+        <div class="qz-result-icon" id="qzResultIcon">🎯</div>
+        <div class="qz-result-score" id="qzResultScore">0/10</div>
+        <div class="qz-result-text" id="qzResultText">Los geht's!</div>
+        <div class="qz-result-detail" id="qzResultDetail"></div>
+        <button class="qz-again" onclick="resetQuiz()">🔄 Nochmal üben</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== BLITZ / FLASHCARDS MODE ===== -->
+  <div class="mode-panel" id="panel-blitz">
+    <div class="game-area">
+      <div class="blitz-setup" id="blitzSetup">
+        <div class="qz-title">🃏 Vokabel-Blitz</div>
+        <div class="qz-sub">Schnelle Karten-Wiederholung — tippe auf die Karte zum Umdrehen.</div>
+        <div class="blitz-topic-chips" id="blitzTopicChips"></div>
+        <button class="blitz-start-btn" onclick="startBlitz()">🃏 Karten mischen</button>
+      </div>
+
+      <div id="blitzRun" style="display:none;">
+        <div class="blitz-progress" id="blitzProgress">Karte 1 / 10</div>
+        <div class="blitz-card-wrap">
+          <div class="blitz-card" id="blitzCard" onclick="flipBlitzCard()">
+            <div class="blitz-face blitz-front">
+              <div class="b-flag">🇩🇪</div>
+              <div class="b-word" id="blitzFrontWord">Wort</div>
+              <div class="b-hint">Tippe zum Umdrehen</div>
+            </div>
+            <div class="blitz-face blitz-back">
+              <div class="b-flag">🇬🇧</div>
+              <div class="b-word" id="blitzBackWord">meaning</div>
+              <div class="b-hint">Hattest du es richtig?</div>
+            </div>
+          </div>
+        </div>
+        <div class="blitz-actions">
+          <button class="b-know" onclick="blitzKnow()">✓ Gewusst</button>
+          <button class="b-again" onclick="blitzRetry()">✗ Nochmal</button>
+        </div>
+      </div>
+
+      <div class="blitz-done" id="blitzDone" style="display:none;">
+        <div class="b-icon">🎉</div>
+        <h3>Blitz geschafft!</h3>
+        <p id="blitzDoneText"></p>
+        <button class="blitz-again" onclick="resetBlitz()">🔄 Nochmal</button>
       </div>
     </div>
   </div>
@@ -1114,11 +1461,408 @@ function escapeHtml(text) {
 }
 const escHtml = escapeHtml;
 
+// ===== MODE SWITCHING =====
+function switchMode(mode) {
+  ['practice', 'test', 'blitz'].forEach(m => {
+    document.getElementById('panel-' + m).classList.toggle('active', m === mode);
+    document.getElementById('tab-' + m).classList.toggle('active', m === mode);
+  });
+}
+
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ===== QUIZ (TEST SIMULATOR) =====
+const QUIZ_GAP = [
+  { txt: '___ das Leben im Ausland schwierig sein kann, bietet es viele Chancen.', ans: 'Obwohl', opts: ['Obwohl', 'Weil', 'Deshalb', 'Trotzdem'] },
+  { txt: '___ manche Menschen Sicherheit bevorzugen, suchen andere neue Herausforderungen.', ans: 'Während', opts: ['Während', 'Obwohl', 'Denn', 'Weil'] },
+  { txt: '___ möchte man unabhängig sein, andererseits braucht man Unterstützung.', ans: 'Einerseits', opts: ['Einerseits', 'Außerdem', 'Trotzdem', 'Deshalb'] },
+  { txt: '___ der hohen Lebenshaltungskosten ziehen viele Menschen um.', ans: 'Aufgrund', opts: ['Aufgrund', 'Mit', 'Für', 'Bei'] },
+  { txt: '___ Eltern als auch Kinder müssen Verständnis füreinander haben.', ans: 'Sowohl', opts: ['Sowohl', 'Auch', 'Nicht', 'Weder'] },
+  { txt: 'Eine gute Ausbildung verbessert nicht nur die Chancen, ___ auch das Selbstvertrauen.', ans: 'sondern', opts: ['sondern', 'aber', 'doch', 'auch'] },
+  { txt: 'Je mehr man übt, ___ sicherer wird man.', ans: 'desto', opts: ['desto', 'als', 'wie', 'denn'] },
+  { txt: 'Man sollte Kontakte knüpfen, ___ man sich schneller integrieren kann.', ans: 'damit', opts: ['damit', 'weil', 'obwohl', 'während'] },
+  { txt: 'Viele Menschen suchen neue Herausforderungen. ___ ziehen sie ins Ausland.', ans: 'Aus diesem Grund', opts: ['Aus diesem Grund', 'Obwohl', 'Wenn', 'Ob'] },
+  { txt: '___ sollten Eltern die Entscheidungen ihrer Kinder respektieren.', ans: 'Meiner Ansicht nach', opts: ['Meiner Ansicht nach', 'Aufgrund', 'Weil', 'Damit'] },
+  { txt: 'Der ___ der Stadt ist der Dom.', ans: 'Wahrzeichen', opts: ['Wahrzeichen', 'Stadtführer', 'Nationalpark', 'Absatz'] },
+  { txt: 'Viele Menschen möchten in ein anderes Land ___ .', ans: 'auswandern', opts: ['auswandern', 'einwandern', 'überleben', 'erfassen'] },
+  { txt: 'Die ___ ihrer Eltern war, dass sie Jura studiert.', ans: 'Erwartung', opts: ['Erwartung', 'Fürsorge', 'Abhängigkeit', 'Vorschrift'] },
+  { txt: 'Er hat eine starke ___ im Internet, besonders auf YouTube.', ans: 'Präsenz', opts: ['Präsenz', 'Profil', 'Abonnent', 'Berater'] },
+  { txt: 'Nach dem Misserfolg brauchte er viel ___ , um weiterzumachen.', ans: 'Mut', opts: ['Mut', 'Angst', 'Druck', 'Stolz'] },
+  { txt: 'Sie fühlt sich in ihrer neuen ___ endlich heimisch.', ans: 'Heimat', opts: ['Heimat', 'Veränderung', 'Einstellung', 'Führungsposition'] }
+];
+
+const QUIZ_SCRAMBLE = [
+  'Obwohl das Leben im Ausland schwierig sein kann, bietet es viele Chancen.',
+  'Während manche Menschen Sicherheit bevorzugen, suchen andere neue Herausforderungen.',
+  'Ich möchte ein neues Leben in einem anderen Land beginnen.',
+  'Aufgrund der hohen Lebenshaltungskosten ziehen viele Menschen um.',
+  'Man sollte Kontakte knüpfen, damit man sich schneller integrieren kann.',
+  'Je mehr man übt, desto sicherer wird man.',
+  'Meiner Ansicht nach sollten Eltern die Entscheidungen ihrer Kinder respektieren.',
+  'Einerseits möchte man unabhängig sein, andererseits braucht man Unterstützung.',
+  'Die Veränderung war der Wendepunkt in meinem Leben.',
+  'Die Stadtführung zeigte die wichtigsten Sehenswürdigkeiten der Altstadt.',
+  'Sowohl Eltern als auch Kinder müssen Verständnis füreinander haben.',
+  'Der Umzug ins Ausland war die beste Entscheidung meines Lebens.'
+];
+
+let quizState = { topics: [], questions: [], idx: 0, correct: 0, answered: false, order: [] };
+
+function renderQuizTopicChips() {
+  const wrap = document.getElementById('quizTopicChips');
+  wrap.innerHTML = Object.entries(DATA.topics).map(([id, t]) =>
+    `<span class="quiz-topic-chip on" data-topic="${id}" onclick="toggleQuizTopic('${id}')">${t.emoji} ${t.name}</span>`
+  ).join('');
+}
+
+function toggleQuizTopic(id) {
+  const chip = document.querySelector(`#quizTopicChips [data-topic="${id}"]`);
+  if (chip) chip.classList.toggle('on');
+}
+
+function getSelectedTopics() {
+  return [...document.querySelectorAll('#quizTopicChips .quiz-topic-chip.on')].map(c => c.getAttribute('data-topic'));
+}
+
+function buildQuizQuestions(topics, n) {
+  const vocab = [];
+  topics.forEach(tid => (DATA.topics[tid].vocab || []).forEach(p => vocab.push({ de: p[0], en: p[1] })));
+  const gapPool = shuffle(QUIZ_GAP);
+  const scrPool = shuffle(QUIZ_SCRAMBLE);
+  const qs = [];
+  for (let i = 0; i < n; i++) {
+    const r = Math.random();
+    if (r < 0.4 && gapPool.length) {
+      qs.push({ type: 'gap', data: gapPool.pop() });
+    } else if (r < 0.75 && scrPool.length) {
+      qs.push({ type: 'scramble', data: scrPool.pop() });
+    } else if (vocab.length >= 4) {
+      const pick = vocab[Math.floor(Math.random() * vocab.length)];
+      if (Math.random() < 0.5) {
+        // MC: English question -> pick German answer
+        const distract = shuffle(vocab.filter(v => v.de !== pick.de)).slice(0, 3).map(v => v.de);
+        qs.push({ type: 'vocabMC', data: { txt: `${pick.en} — Welches deutsche Wort passt?`, ans: pick.de, opts: [pick.de].concat(distract) } });
+      } else {
+        qs.push({ type: 'vocabType', data: { en: pick.en, ans: pick.de } });
+      }
+    } else if (gapPool.length) {
+      qs.push({ type: 'gap', data: gapPool.pop() });
+    } else if (scrPool.length) {
+      qs.push({ type: 'scramble', data: scrPool.pop() });
+    }
+  }
+  return shuffle(qs).slice(0, n);
+}
+
+function startQuiz() {
+  const topics = getSelectedTopics();
+  if (topics.length === 0) { showToast('⚠️ Wähle mindestens ein Thema aus!', 2500); return; }
+  quizState.topics = topics;
+  quizState.idx = 0;
+  quizState.correct = 0;
+  quizState.answered = false;
+  quizState.questions = buildQuizQuestions(topics, 10);
+  document.getElementById('quizSetup').style.display = 'none';
+  document.getElementById('quizResult').classList.remove('show');
+  document.getElementById('quizProgress').style.display = 'flex';
+  renderQuizQuestion();
+}
+
+function renderQuizQuestion() {
+  const q = quizState.questions[quizState.idx];
+  quizState.answered = false;
+  quizState.order = [];
+  document.getElementById('qCount').textContent = `Frage ${quizState.idx + 1}/${quizState.questions.length}`;
+  document.getElementById('qpFill').style.width = ((quizState.idx) / quizState.questions.length * 100) + '%';
+  document.getElementById('qpScore').textContent = `${quizState.correct} P.`;
+  document.getElementById('qzFeedback').className = 'qz-feedback';
+  document.getElementById('qzNext').classList.remove('show');
+  document.getElementById('quizQuestion').classList.add('show');
+  const typeMap = { gap: 'Lückentext', scramble: 'Satz ordnen', vocabMC: 'Wortschatz wählen', vocabType: 'Übersetzung' };
+  document.getElementById('qzType').textContent = typeMap[q.type] || 'Frage';
+  const area = document.getElementById('qzAnswerArea');
+  area.innerHTML = '';
+
+  if (q.type === 'gap' || q.type === 'vocabMC') {
+    document.getElementById('qzText').innerHTML = q.data.txt.replace('___', '<span class="blank">◌◌◌◌◌</span>');
+    const grid = document.createElement('div');
+    grid.className = 'qz-options';
+    shuffle(q.data.opts).forEach(o => {
+      const b = document.createElement('button');
+      b.className = 'qz-opt';
+      b.textContent = o;
+      b.addEventListener('click', () => answerMC(b, o));
+      grid.appendChild(b);
+    });
+    area.appendChild(grid);
+  } else if (q.type === 'scramble') {
+    document.getElementById('qzText').textContent = 'Ordne die Wörter zu einem korrekten Satz:';
+    const target = document.createElement('div');
+    target.className = 'qz-target';
+    target.id = 'scrambleTarget';
+    const pool = document.createElement('div');
+    pool.className = 'qz-pool';
+    pool.id = 'scramblePool';
+    const words = q.data.match(/[A-Za-zÄÖÜäöüß][A-Za-zÄÖÜäöüß-]*|[.,]/g);
+    shuffle(words).forEach(w => {
+      const s = document.createElement('span');
+      s.className = 'scramble-word';
+      s.textContent = w;
+      s.addEventListener('click', () => placeScrambleWord(s));
+      pool.appendChild(s);
+    });
+    const actions = document.createElement('div');
+    actions.className = 'action-row';
+    actions.style.marginTop = '10px';
+    const check = document.createElement('button');
+    check.className = 'btn-primary';
+    check.textContent = '✅ Prüfen';
+    check.addEventListener('click', checkScramble);
+    const reset = document.createElement('button');
+    reset.className = 'btn-outline';
+    reset.textContent = '↩️ Zurücksetzen';
+    reset.addEventListener('click', resetScramble);
+    actions.appendChild(check);
+    actions.appendChild(reset);
+    area.appendChild(target);
+    area.appendChild(pool);
+    area.appendChild(actions);
+  } else if (q.type === 'vocabType') {
+    document.getElementById('qzText').innerHTML = `<strong>${escHtml(q.data.en)}</strong> — Wie heißt das auf Deutsch?`;
+    const wrap = document.createElement('div');
+    wrap.className = 'qz-input';
+    const inp = document.createElement('input');
+    inp.type = 'text';
+    inp.placeholder = 'Deutsches Wort ...';
+    inp.id = 'qzTypeInput';
+    const btn = document.createElement('button');
+    btn.className = 'qz-submit';
+    btn.textContent = 'Prüfen';
+    btn.addEventListener('click', () => answerTyped());
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') answerTyped(); });
+    wrap.appendChild(inp);
+    wrap.appendChild(btn);
+    area.appendChild(wrap);
+    setTimeout(() => inp.focus(), 50);
+  }
+}
+
+function placeScrambleWord(el) {
+  if (quizState.answered || el.classList.contains('used')) return;
+  const target = document.getElementById('scrambleTarget');
+  const copy = el.cloneNode(true);
+  copy.classList.add('used', 'placed');
+  copy.classList.remove('scramble-word');
+  copy.className = 'scramble-word placed used';
+  copy.addEventListener('click', () => {
+    if (quizState.answered) return;
+    copy.remove();
+    el.classList.remove('used');
+    quizState.order = quizState.order.filter(w => w !== el.textContent);
+  });
+  target.appendChild(copy);
+  el.classList.add('used');
+  quizState.order.push(el.textContent);
+}
+
+function resetScramble() {
+  document.getElementById('scrambleTarget').innerHTML = '';
+  document.querySelectorAll('#scramblePool .scramble-word').forEach(w => w.classList.remove('used'));
+  quizState.order = [];
+}
+
+function checkScramble() {
+  const q = quizState.questions[quizState.idx];
+  const user = quizState.order.join(' ').toLowerCase().replace(/\s*([.,])\s*/g, '$1').replace(/\s+/g, ' ').trim();
+  const correct = q.data.toLowerCase().replace(/\s*([.,])\s*/g, '$1').replace(/\s+/g, ' ').trim();
+  const ok = user === correct;
+  finishQuestion(ok, q.data);
+  if (!ok) { showQuizAnswer(q.data); }
+}
+
+function answerMC(btn, chosen) {
+  if (quizState.answered) return;
+  const q = quizState.questions[quizState.idx];
+  const ok = chosen.trim().toLowerCase() === q.data.ans.trim().toLowerCase();
+  document.querySelectorAll('.qz-opt').forEach(b => {
+    b.classList.add('disabled');
+    if (b.textContent.trim().toLowerCase() === q.data.ans.trim().toLowerCase()) b.classList.add('correct');
+  });
+  if (!ok) btn.classList.add('wrong');
+  finishQuestion(ok, q.data.ans);
+}
+
+function normalizeAnswer(s) {
+  return s.toLowerCase().trim().replace(/[.,!?;:""'']/g, '').replace(/\s+/g, ' ').trim();
+}
+
+function answerTyped() {
+  if (quizState.answered) return;
+  const q = quizState.questions[quizState.idx];
+  const input = document.getElementById('qzTypeInput');
+  const user = normalizeAnswer(input.value);
+  const targets = [normalizeAnswer(q.data.ans)];
+  // also accept without leading article ("die Veränderung" -> "veränderung")
+  const parts = q.data.ans.split(/\s+/);
+  if (parts.length > 1 && /^(der|die|das|ein|eine|einen|einem|eines|dem|den|des|mein|meine|dein|deine|sein|seine|ihr|ihre|unser|unsere|euer|eure)$/i.test(parts[0])) {
+    targets.push(normalizeAnswer(parts.slice(1).join(' ')));
+  }
+  const ok = user.length > 0 && targets.includes(user);
+  if (!ok && user.length > 0) {
+    // lenient: last word of answer matches last meaningful word of target
+    const lastUser = user.split(' ').pop();
+    const lastTarget = targets[0].split(' ').pop();
+    if (lastTarget && lastUser === lastTarget) { /* near miss - still count as wrong but show hint */ }
+  }
+  input.disabled = true;
+  finishQuestion(ok, q.data.ans);
+}
+
+function finishQuestion(ok, correctText) {
+  if (quizState.answered) return;
+  quizState.answered = true;
+  const fb = document.getElementById('qzFeedback');
+  if (ok) {
+    quizState.correct++;
+    fb.className = 'qz-feedback right show';
+    fb.textContent = '✅ Richtig! Gut gemacht!';
+    playSound('success');
+  } else {
+    fb.className = 'qz-feedback wrong show';
+    fb.textContent = '❌ Leider falsch.' + (correctText ? ' Richtige Antwort: ' + correctText : '');
+    playSound('error');
+  }
+  document.getElementById('qpScore').textContent = `${quizState.correct} P.`;
+  const isLast = quizState.idx === quizState.questions.length - 1;
+  const next = document.getElementById('qzNext');
+  next.textContent = isLast ? '🏁 Ergebnis' : 'Weiter →';
+  next.classList.add('show');
+}
+
+function showQuizAnswer(ans) {
+  // for scramble: show full correct sentence
+  const fb = document.getElementById('qzFeedback');
+  fb.textContent = '❌ Leider falsch. Richtig: ' + ans;
+}
+
+function nextQuestion() {
+  if (quizState.idx === quizState.questions.length - 1) {
+    showQuizResult();
+  } else {
+    quizState.idx++;
+    renderQuizQuestion();
+  }
+}
+
+function showQuizResult() {
+  const total = quizState.questions.length;
+  const score = quizState.correct;
+  const pct = Math.round(score / total * 100);
+  document.getElementById('quizQuestion').classList.remove('show');
+  document.getElementById('quizProgress').style.display = 'none';
+  document.getElementById('quizResult').classList.add('show');
+  document.getElementById('qzResultScore').textContent = `${score}/${total}`;
+  const icon = pct >= 90 ? '🏆' : pct >= 70 ? '🎉' : pct >= 50 ? '👍' : '📚';
+  document.getElementById('qzResultIcon').textContent = icon;
+  const msg = pct >= 90 ? 'Perfekt! Bereit für den Test!' : pct >= 70 ? 'Stark! Nur noch Feinschliff!' : pct >= 50 ? 'Gut angefangen — übe weiter!' : 'Kein Problem — wiederhole das Thema und versuch es nochmal!';
+  document.getElementById('qzResultText').textContent = msg;
+  document.getElementById('qzResultDetail').textContent = `Du hast ${score} von ${total} Fragen richtig beantwortet (${pct}%).`;
+  const xp = Math.round(pct * 1.5);
+  addXP(xp);
+  if (pct >= 70) confetti();
+}
+
+function resetQuiz() {
+  document.getElementById('quizResult').classList.remove('show');
+  document.getElementById('quizSetup').style.display = 'block';
+}
+
+// ===== BLITZ (FLASHCARDS) =====
+let blitzState = { queue: [], idx: 0, known: 0, total: 0 };
+
+function renderBlitzTopicChips() {
+  const wrap = document.getElementById('blitzTopicChips');
+  wrap.innerHTML = Object.entries(DATA.topics).map(([id, t]) =>
+    `<span class="blitz-topic-chip on" data-topic="${id}" onclick="toggleBlitzTopic('${id}')">${t.emoji} ${t.name}</span>`
+  ).join('');
+}
+
+function toggleBlitzTopic(id) {
+  const chip = document.querySelector(`#blitzTopicChips [data-topic="${id}"]`);
+  if (chip) chip.classList.toggle('on');
+}
+
+function startBlitz() {
+  const topics = [...document.querySelectorAll('#blitzTopicChips .blitz-topic-chip.on')].map(c => c.getAttribute('data-topic'));
+  if (topics.length === 0) { showToast('⚠️ Wähle mindestens ein Thema aus!', 2500); return; }
+  const vocab = [];
+  topics.forEach(tid => (DATA.topics[tid].vocab || []).forEach(p => vocab.push({ de: p[0], en: p[1] })));
+  if (vocab.length === 0) { showToast('⚠️ Keine Vokabeln gefunden!', 2500); return; }
+  blitzState.queue = shuffle(vocab);
+  blitzState.idx = 0;
+  blitzState.known = 0;
+  blitzState.total = vocab.length;
+  document.getElementById('blitzSetup').style.display = 'none';
+  document.getElementById('blitzDone').style.display = 'none';
+  document.getElementById('blitzRun').style.display = 'block';
+  renderBlitzCard();
+}
+
+function renderBlitzCard() {
+  const card = blitzState.queue[blitzState.idx];
+  if (!card) { finishBlitz(); return; }
+  document.getElementById('blitzCard').classList.remove('flipped');
+  document.getElementById('blitzFrontWord').textContent = card.de;
+  document.getElementById('blitzBackWord').textContent = card.en;
+  document.getElementById('blitzProgress').textContent = `Karte ${blitzState.idx + 1} von ${blitzState.queue.length} · ✓ ${blitzState.known} gewusst`;
+}
+
+function flipBlitzCard() {
+  document.getElementById('blitzCard').classList.toggle('flipped');
+}
+
+function blitzKnow() {
+  blitzState.known++;
+  blitzState.idx++;
+  playSound('save');
+  renderBlitzCard();
+}
+
+function blitzRetry() {
+  const card = blitzState.queue[blitzState.idx];
+  blitzState.queue.push(card); // retry at the end
+  blitzState.idx++;
+  renderBlitzCard();
+}
+
+function finishBlitz() {
+  document.getElementById('blitzRun').style.display = 'none';
+  document.getElementById('blitzDone').style.display = 'block';
+  const pct = Math.round(blitzState.known / blitzState.total * 100);
+  document.getElementById('blitzDoneText').textContent = `Du kanntest ${blitzState.known} von ${blitzState.total} Wörtern (${pct}%).`;
+  addXP(Math.round(pct * 0.8));
+  if (pct >= 70) confetti();
+}
+
+function resetBlitz() {
+  document.getElementById('blitzDone').style.display = 'none';
+  document.getElementById('blitzSetup').style.display = 'block';
+}
+
 // ===== INIT =====
 renderTopics();
 renderStructures();
 renderPrompts();
 renderSaved();
+renderQuizTopicChips();
+renderBlitzTopicChips();
 updateHeader();
 selectTopic('topic1');
 document.getElementById('soundBtn').textContent = soundOn ? '🔊' : '🔇';
