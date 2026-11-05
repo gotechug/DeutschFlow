@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>B2.1 Deutsch Schreibtraining</title>
+<style>
+  :root {
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+    --text: #1e293b;
+    --text-secondary: #64748b;
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --primary-light: #dbeafe;
+    --accent: #f59e0b;
+    --success: #10b981;
+    --danger: #ef4444;
+    --radius: 12px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+    --shadow-lg: 0 4px 6px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.06);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+  .app-header {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: white;
+    padding: 24px 20px;
+    text-align: center;
+  }
+  .app-header h1 { font-size: 1.6rem; margin-bottom: 4px; }
+  .app-header p { font-size: 0.95rem; opacity: 0.85; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
+
+  /* Navigation */
+  .module-nav {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .module-nav button {
+    padding: 10px 20px;
+    border: 2px solid var(--border);
+    background: var(--surface);
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    transition: all 0.2s;
+  }
+  .module-nav button:hover { border-color: var(--primary); color: var(--primary); }
+  .module-nav button.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+  .topic-nav {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .topic-nav button {
+    padding: 8px 16px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    transition: all 0.2s;
+  }
+  .topic-nav button:hover { border-color: var(--primary); color: var(--primary); }
+  .topic-nav button.active { background: var(--primary-light); color: var(--primary); border-color: var(--primary); font-weight: 600; }
+
+  /* Main layout */
+  .main-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  @media (max-width: 768px) {
+    .main-grid { grid-template-columns: 1fr; }
+  }
+
+  .card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .card h2 {
+    font-size: 1.15rem;
+    margin-bottom: 16px;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card h2 .icon { font-size: 1.3rem; }
+
+  /* Vocabulary */
+  .vocab-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+  .vocab-item {
+    padding: 8px 10px;
+    background: var(--bg);
+    border-radius: 6px;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    justify-content: space-between;
+  }
+  .vocab-item:hover { background: var(--primary-light); }
+  .vocab-item .de { font-weight: 500; color: var(--primary); }
+  .vocab-item .en { color: var(--text-secondary); font-size: 0.82rem; }
+  .vocab-item .badge {
+    font-size: 0.7rem;
+    background: var(--primary-light);
+    color: var(--primary);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+
+  /* Subtopic chips */
+  .subtopics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+  .subtopic-chip {
+    padding: 4px 10px;
+    background: var(--bg);
+    border-radius: 20px;
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+  }
+
+  /* Sentence builder */
+  .sentence-builder textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 12px;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: inherit;
+    resize: vertical;
+    transition: border-color 0.2s;
+  }
+  .sentence-builder textarea:focus { outline: none; border-color: var(--primary); }
+
+  .sentence-tools {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+  .sentence-tools button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  .btn-primary { background: var(--primary); color: white; }
+  .btn-primary:hover { background: var(--primary-hover); }
+  .btn-success { background: var(--success); color: white; }
+  .btn-success:hover { opacity: 0.9; }
+  .btn-outline {
+    background: transparent;
+    border: 1px solid var(--border) !important;
+    color: var(--text-secondary);
+  }
+  .btn-outline:hover { border-color: var(--primary) !important; color: var(--primary); }
+  .btn-danger { background: var(--danger); color: white; }
+  .btn-danger:hover { opacity: 0.9; }
+
+  /* Structure buttons */
+  .structure-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+  }
+  .structure-btn {
+    padding: 5px 12px;
+    border: 1px solid var(--accent);
+    background: #fffbeb;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.82rem;
+    color: #92400e;
+    transition: all 0.15s;
+  }
+  .structure-btn:hover { background: #fef3c7; }
+
+  /* Saved sentences */
+  .saved-list { list-style: none; }
+  .saved-item {
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    position: relative;
+  }
+  .saved-item .saved-text { font-size: 0.95rem; margin-bottom: 4px; }
+  .saved-item .saved-meta {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .saved-item .saved-meta .tag {
+    background: var(--primary-light);
+    color: var(--primary);
+    padding: 1px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+  .saved-item .delete-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 4px;
+  }
+  .saved-item .delete-btn:hover { color: var(--danger); }
+
+  /* Writing prompts */
+  .prompt-card {
+    padding: 14px;
+    background: var(--bg);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .prompt-card:hover { background: var(--primary-light); }
+  .prompt-card .prompt-num {
+    font-size: 0.75rem;
+    color: var(--primary);
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+
+  /* Empty state */
+  .empty-state {
+    text-align: center;
+    padding: 30px 20px;
+    color: var(--text-secondary);
+  }
+  .empty-state .big-icon { font-size: 2.5rem; margin-bottom: 10px; }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--text);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s;
+    z-index: 1000;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+
+  /* Prompt writing area */
+  .prompt-active {
+    display: none;
+    margin-top: 16px;
+    padding: 16px;
+    background: #fffbeb;
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+  }
+  .prompt-active.show { display: block; }
+  .prompt-active .prompt-question { font-weight: 600; margin-bottom: 10px; }
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <h1>✍️ B2.1 Deutsch Schreibtraining</h1>
+  <p>Wähle ein Thema, lerne Vokabeln, schreibe Sätze — und verbessere dein Deutsch!</p>
+</header>
+
+<div class="container">
+
+  <!-- Module Navigation -->
+  <div class="module-nav" id="moduleNav"></div>
+
+  <!-- Topic Navigation -->
+  <div class="topic-nav" id="topicNav"></div>
+
+  <!-- Main Grid -->
+  <div class="main-grid">
+    <!-- Left Column -->
+    <div>
+      <!-- Topic Info -->
+      <div class="card" id="topicInfo">
+        <h2><span class="icon">📖</span> <span id="topicTitle">Thema</span></h2>
+        <div class="subtopics" id="subtopicsList"></div>
+      </div>
+
+      <!-- Vocabulary -->
+      <div class="card" id="vocabCard">
+        <h2><span class="icon">📝</span> Wortschatz <span id="vocabCount" style="font-size:0.8rem;color:var(--text-secondary);font-weight:400;"></span></h2>
+        <div class="vocab-grid" id="vocabList"></div>
+      </div>
+    </div>
+
+    <!-- Right Column -->
+    <div>
+      <!-- Sentence Builder -->
+      <div class="card">
+        <h2><span class="icon">✏️</span> Satzbauer</h2>
+        <div class="sentence-builder">
+          <textarea id="sentenceInput" placeholder="Schreibe hier deinen Satz auf Deutsch ..." spellcheck="false"></textarea>
+          <div class="sentence-tools">
+            <button class="btn-primary" onclick="saveSentence()">💾 Satz speichern</button>
+            <button class="btn-outline" onclick="clearInput()">🗑️ Zurücksetzen</button>
+          </div>
+          <div style="margin-top:12px;">
+            <small style="color:var(--text-secondary);font-weight:600;">📌 B2-Strukturen einfügen:</small>
+            <div class="structure-buttons" id="structureButtons"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Saved Sentences -->
+      <div class="card">
+        <h2><span class="icon">📚</span> Meine Sätze <span id="savedCount" style="font-size:0.8rem;color:var(--text-secondary);font-weight:400;"></span></h2>
+        <div id="savedList"></div>
+      </div>
+
+      <!-- Writing Prompts -->
+      <div class="card">
+        <h2><span class="icon">💡</span> Schreibimpulse</h2>
+        <div id="promptsList"></div>
+        <div class="prompt-active" id="promptActive">
+          <div class="prompt-question" id="promptQuestion"></div>
+          <div class="sentence-builder">
+            <textarea id="promptInput" placeholder="Deine Antwort auf Deutsch ..." spellcheck="false" style="min-height:80px;"></textarea>
+            <div class="sentence-tools">
+              <button class="btn-success" onclick="savePromptAnswer()">💾 Antwort speichern</button>
+              <button class="btn-outline" onclick="closePrompt()">Abbrechen</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== DATA =====
+const DATA = {
+  modules: [
+    {
+      id: 'm1',
+      name: 'Modul 1: Das Leben neu gestalten',
+      topics: ['topic1', 'topic2', 'topic3']
+    },
+    {
+      id: 'm2',
+      name: 'Modul 2: Persönliche Entwicklung & Gesellschaft',
+      topics: ['topic4', 'topic5']
+    }
+  ],
+  topics: {
+    topic1: {
+      name: 'Das Leben neu gestalten',
+      subtitle: 'Redesigning your life / Making a fresh start',
+      subtopics: [
+        'Making changes in life and taking a new direction',
+        'Making important life decisions',
+        'Overcoming fear and failure',
+        'Starting a new career and developing professionally',
+        'Personal development and self-confidence',
+        'Changing habits, attitudes and routines',
+        'Dealing with unexpected situations',
+        'Finding motivation and achieving personal dreams'
+      ],
+      vocab: [
+        ['die Veränderung', 'change'],
+        ['einen neuen Weg gehen', 'to take a new path'],
+        ['eine neue Richtung einschlagen', 'to take a new direction'],
+        ['der Wendepunkt', 'turning point'],
+        ['der Misserfolg', 'failure'],
+        ['der Mut', 'courage'],
+        ['die Angst', 'fear'],
+        ['die Entscheidung', 'decision'],
+        ['die Einstellung', 'attitude'],
+        ['die Führungsposition', 'leadership position'],
+        ['überleben', 'to survive'],
+        ['sich umstellen', "to adapt / change one's routine"],
+        ['sich etwas zutrauen', 'to feel capable of doing something'],
+        ['das Leben neu gestalten', "to redesign one's life"]
+      ]
+    },
+    topic2: {
+      name: 'Ein neues Zuhause finden',
+      subtitle: 'Finding a new home',
+      subtopics: [
+        'Moving to another country',
+        'Immigration, integration and starting a new life abroad',
+        'Cultural differences and finding a sense of belonging',
+        'Learning a new language and building social connections',
+        'Family background, traditions and identity',
+        'Challenges faced by refugees and immigrants',
+        'Becoming part of a new society'
+      ],
+      vocab: [
+        ['der Flüchtling', 'refugee'],
+        ['die Staatsbürgerschaft', 'citizenship'],
+        ['die Heimat', 'home / homeland'],
+        ['der Migrationshintergrund', 'migration background'],
+        ['der Gastarbeiter', 'migrant worker'],
+        ['einwandern', 'to immigrate'],
+        ['auswandern', 'to emigrate'],
+        ['sich niederlassen', 'to settle'],
+        ['die Lebensbedingungen', 'living conditions'],
+        ['sich heimisch fühlen', 'to feel at home'],
+        ['Kontakte knüpfen', 'to make contacts'],
+        ['die Tradition', 'tradition']
+      ]
+    },
+    topic3: {
+      name: 'Stadtführungen mal anders',
+      subtitle: 'City tours in different ways',
+      subtopics: [
+        'Tourism and city experiences',
+        'Discovering historical places and landmarks',
+        'Cultural differences between cities',
+        'Architecture and local history',
+        'Traditional versus modern tourism',
+        'The role of tour guides',
+        'Local food, culture and personal perspectives on tourism'
+      ],
+      vocab: [
+        ['die Stadtführung', 'guided city tour'],
+        ['die Perspektive', 'perspective'],
+        ['der Stadtführer', 'tour guide'],
+        ['das Wahrzeichen', 'landmark'],
+        ['die Architektur', 'architecture'],
+        ['die Altstadt', 'old town'],
+        ['das Einkaufsviertel', 'shopping district'],
+        ['der Nationalpark', 'national park'],
+        ['die Sehenswürdigkeit', 'tourist attraction'],
+        ['die Tradition', 'tradition'],
+        ['die Erfahrung', 'experience'],
+        ['die Aufregung', 'excitement']
+      ]
+    },
+    topic4: {
+      name: 'In die Fußstapfen der Eltern treten?',
+      subtitle: "Following in your parents' footsteps?",
+      subtopics: [
+        "Following your parents' career paths",
+        'Family expectations and parental pressure',
+        'Choosing your own profession',
+        'The influence of parents on personal decisions',
+        'Family traditions and generational differences',
+        'Independence versus family expectations',
+        'Sibling relationships and family support'
+      ],
+      vocab: [
+        ['die Fußstapfen', 'footsteps'],
+        ['die Erwartung', 'expectation'],
+        ['der Druck', 'pressure'],
+        ['die Entscheidung', 'decision'],
+        ['die Überzeugung', 'conviction'],
+        ['die Ansicht', 'opinion / view'],
+        ['das Verständnis', 'understanding'],
+        ['die Konkurrenz', 'competition'],
+        ['der Zusammenhalt', 'solidarity / cohesion'],
+        ['der Stolz', 'pride'],
+        ['die Fürsorge', 'care'],
+        ['das Vorbild', 'role model'],
+        ['die Abhängigkeit', 'dependence'],
+        ['die Vorschrift', 'regulation / instruction'],
+        ['erfüllen', 'to fulfil'],
+        ['sich auswirken auf (+ Akk.)', 'to affect'],
+        ['reagieren auf (+ Akk.)', 'to react to'],
+        ['eingehen auf (+ Akk.)', 'to address / respond to']
+      ]
+    },
+    topic5: {
+      name: 'Das eigene Profil schärfen',
+      subtitle: 'Developing your personal and professional identity',
+      subtopics: [
+        'Personal branding and building a professional reputation',
+        'Developing your personality and presenting yourself professionally',
+        'Social media and online presence',
+        'Building an audience and professional network',
+        'Professional skills and qualifications',
+        'Standing out from the competition',
+        'Becoming an expert and communicating your strengths'
+      ],
+      vocab: [
+        ['das Profil', 'profile'],
+        ['die Präsenz', 'presence'],
+        ['die Online-Präsenz', 'online presence'],
+        ['der Abonnent', 'subscriber'],
+        ['das Design', 'design'],
+        ['der Berater', 'consultant'],
+        ['der Steuerberater', 'tax adviser'],
+        ['der Absatz', 'paragraph'],
+        ['die Zwischenüberschrift', 'subheading'],
+        ['dynamisch', 'dynamic'],
+        ['seriös', 'serious / professional'],
+        ['natürlich', 'natural'],
+        ['unkonventionell', 'unconventional'],
+        ['professionell', 'professional'],
+        ['äußerst', 'extremely'],
+        ['erfassen', 'to grasp / capture'],
+        ['rüberkommen', 'to come across']
+      ]
+    }
+  },
+  structures: [
+    { name: 'obwohl', desc: 'Although', example: 'Obwohl das Leben im Ausland schwierig sein kann, bietet es viele Chancen.' },
+    { name: 'während', desc: 'While / Whereas', example: 'Während manche Menschen Sicherheit bevorzugen, suchen andere neue Herausforderungen.' },
+    { name: 'einerseits ... andererseits', desc: 'On one hand ... on the other hand', example: 'Einerseits möchte man unabhängig sein, andererseits braucht man Unterstützung.' },
+    { name: 'aufgrund (+ Genitiv)', desc: 'Due to', example: 'Aufgrund der hohen Lebenshaltungskosten ziehen viele Menschen um.' },
+    { name: 'sowohl ... als auch', desc: 'Both ... and', example: 'Sowohl Eltern als auch Kinder müssen Verständnis füreinander haben.' },
+    { name: 'nicht nur ... sondern auch', desc: 'Not only ... but also', example: 'Eine gute Ausbildung verbessert nicht nur die Chancen auf dem Arbeitsmarkt, sondern auch das Selbstvertrauen.' },
+    { name: 'je ... desto', desc: 'The more ..., the more ...', example: 'Je mehr man übt, desto sicherer wird man.' },
+    { name: 'damit', desc: 'So that', example: 'Man sollte Kontakte knüpfen, damit man sich schneller integrieren kann.' },
+    { name: 'aus diesem Grund', desc: 'For this reason', example: 'Viele Menschen suchen neue Herausforderungen. Aus diesem Grund ziehen sie ins Ausland.' },
+    { name: 'meiner Ansicht nach', desc: 'In my opinion', example: 'Meiner Ansicht nach sollten Eltern die Entscheidungen ihrer Kinder respektieren.' }
+  ],
+  prompts: [
+    'Warum entscheiden sich Menschen für eine Veränderung im Leben?',
+    'Ist es mutig, ein neues Leben in einem anderen Land zu beginnen?',
+    'Welche Herausforderungen hat man beim Auswandern?',
+    'Was bedeutet Heimat für einen Menschen?',
+    'Ist es schwierig, sich in einer neuen Gesellschaft zu integrieren?',
+    'Welche Vorteile und Nachteile hat das Leben in einer Großstadt?',
+    'Wie kann man eine Stadt für Touristen interessanter machen?',
+    'Sollten Kinder den Beruf ihrer Eltern übernehmen?',
+    'Wie stark sollten Eltern die Entscheidungen ihrer Kinder beeinflussen?',
+    'Ist familiärer Druck immer schlecht?',
+    'Wie wichtig ist die Unterstützung der Familie im Leben?',
+    'Warum ist eine gute Online-Präsenz heutzutage wichtig?',
+    'Wie kann man sich beruflich von der Konkurrenz unterscheiden?',
+    'Ist es wichtiger, erfolgreich oder glücklich zu sein?',
+    'Welche Eigenschaften braucht man, um im Berufsleben erfolgreich zu sein?'
+  ]
+};
+
+// ===== STATE =====
+let currentModule = 'm1';
+let currentTopic = 'topic1';
+let savedSentences = JSON.parse(localStorage.getItem('b2_sentences') || '[]');
+
+// ===== RENDER =====
+function renderModules() {
+  const nav = document.getElementById('moduleNav');
+  nav.innerHTML = DATA.modules.map(m =>
+    `<button class="${m.id === currentModule ? 'active' : ''}" onclick="selectModule('${m.id}')">${m.name}</button>`
+  ).join('');
+}
+
+function renderTopics() {
+  const nav = document.getElementById('topicNav');
+  const module = DATA.modules.find(m => m.id === currentModule);
+  nav.innerHTML = module.topics.map(tid => {
+    const t = DATA.topics[tid];
+    return `<button class="${tid === currentTopic ? 'active' : ''}" onclick="selectTopic('${tid}')">${t.name}</button>`;
+  }).join('');
+}
+
+function renderTopicInfo() {
+  const t = DATA.topics[currentTopic];
+  document.getElementById('topicTitle').textContent = `${t.name} — ${t.subtitle}`;
+  document.getElementById('subtopicsList').innerHTML = t.subtopics.map(s =>
+    `<span class="subtopic-chip">${s}</span>`
+  ).join('');
+}
+
+function renderVocab() {
+  const t = DATA.topics[currentTopic];
+  const list = document.getElementById('vocabList');
+  const count = document.getElementById('vocabCount');
+  list.innerHTML = t.vocab.map(([de, en]) =>
+    `<div class="vocab-item" onclick="insertVocab('${de.replace(/'/g, "\\'")}')">
+      <span class="de">${de}</span>
+      <span class="en">${en}</span>
+    </div>`
+  ).join('');
+  count.textContent = `(${t.vocab.length} Wörter)`;
+}
+
+function renderStructures() {
+  const container = document.getElementById('structureButtons');
+  container.innerHTML = DATA.structures.map(s =>
+    `<button class="structure-btn" onclick="insertStructure('${s.name}', '${s.example.replace(/'/g, "\\'")}')" title="${s.desc}: ${s.example}">${s.name}</button>`
+  ).join('');
+}
+
+function renderPrompts() {
+  const list = document.getElementById('promptsList');
+  list.innerHTML = DATA.prompts.map((p, i) =>
+    `<div class="prompt-card" onclick="openPrompt(${i})">
+      <div class="prompt-num">Schreibimpuls #${i + 1}</div>
+      <div>${p}</div>
+    </div>`
+  ).join('');
+}
+
+function renderSaved() {
+  const container = document.getElementById('savedList');
+  const count = document.getElementById('savedCount');
+  if (savedSentences.length === 0) {
+    container.innerHTML = `<div class="empty-state"><div class="big-icon">📝</div><p>Noch keine Sätze gespeichert. Schreibe einen Satz und klicke auf "Satz speichern"!</p></div>`;
+    count.textContent = '';
+    return;
+  }
+  count.textContent = `(${savedSentences.length} Sätze)`;
+  container.innerHTML = `<ul class="saved-list">${savedSentences.map((s, i) => `
+    <li class="saved-item">
+      <button class="delete-btn" onclick="deleteSentence(${i})" title="Löschen">✕</button>
+      <div class="saved-text">${escapeHtml(s.text)}</div>
+      <div class="saved-meta">
+        <span class="tag">${s.topic}</span>
+        <span>${s.date}</span>
+      </div>
+    </li>
+  `).join('')}</ul>`;
+}
+
+// ===== ACTIONS =====
+function selectModule(id) {
+  currentModule = id;
+  const module = DATA.modules.find(m => m.id === id);
+  currentTopic = module.topics[0];
+  renderModules();
+  renderTopics();
+  renderTopicInfo();
+  renderVocab();
+  renderSaved();
+}
+
+function selectTopic(id) {
+  currentTopic = id;
+  renderTopics();
+  renderTopicInfo();
+  renderVocab();
+  renderSaved();
+}
+
+function insertVocab(word) {
+  const input = document.getElementById('sentenceInput');
+  input.value += (input.value ? ' ' : '') + word;
+  input.focus();
+}
+
+function insertStructure(name, example) {
+  const input = document.getElementById('sentenceInput');
+  const template = name.includes('...') ? name.replace('...', '___') : name + ' ...';
+  input.value += (input.value ? ' ' : '') + template;
+  input.focus();
+  showToast(`💡 ${example}`);
+}
+
+function saveSentence() {
+  const input = document.getElementById('sentenceInput');
+  const text = input.value.trim();
+  if (!text) { showToast('⚠️ Bitte schreibe zuerst einen Satz!'); return; }
+  if (text.length < 3) { showToast('⚠️ Der Satz ist zu kurz.'); return; }
+  const t = DATA.topics[currentTopic];
+  savedSentences.unshift({
+    text: text,
+    topic: t.name,
+    date: new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' })
+  });
+  localStorage.setItem('b2_sentences', JSON.stringify(savedSentences));
+  input.value = '';
+  renderSaved();
+  showToast('✅ Satz gespeichert!');
+}
+
+function clearInput() {
+  document.getElementById('sentenceInput').value = '';
+  document.getElementById('sentenceInput').focus();
+}
+
+function deleteSentence(index) {
+  savedSentences.splice(index, 1);
+  localStorage.setItem('b2_sentences', JSON.stringify(savedSentences));
+  renderSaved();
+  showToast('🗑️ Satz gelöscht');
+}
+
+function openPrompt(index) {
+  const prompt = DATA.prompts[index];
+  document.getElementById('promptQuestion').textContent = `💡 ${prompt}`;
+  document.getElementById('promptActive').classList.add('show');
+  document.getElementById('promptInput').value = '';
+  document.getElementById('promptInput').focus();
+}
+
+function savePromptAnswer() {
+  const input = document.getElementById('promptInput');
+  const text = input.value.trim();
+  if (!text) { showToast('⚠️ Bitte schreibe zuerst eine Antwort!'); return; }
+  const promptQ = document.getElementById('promptQuestion').textContent.replace('💡 ', '');
+  savedSentences.unshift({
+    text: `[Antwort auf: ${promptQ}] ${text}`,
+    topic: DATA.topics[currentTopic].name,
+    date: new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' })
+  });
+  localStorage.setItem('b2_sentences', JSON.stringify(savedSentences));
+  document.getElementById('promptActive').classList.remove('show');
+  renderSaved();
+  showToast('✅ Antwort gespeichert!');
+}
+
+function closePrompt() {
+  document.getElementById('promptActive').classList.remove('show');
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+// ===== INIT =====
+renderModules();
+renderTopics();
+renderTopicInfo();
+renderVocab();
+renderStructures();
+renderPrompts();
+renderSaved();
+</script>
+</body>
+</html>
