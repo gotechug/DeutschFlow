@@ -836,8 +836,8 @@ const GERMAN_NOUNS = new Set([
   'Bewerbung', 'Vorstellung', 'Präsentation', 'Besprechung', 'Termin',
   'Hilfe', 'Rat', 'Tipp', 'Vorschlag', 'Empfehlung', 'Wahl', 'Auswahl',
   'Entwicklung', 'Wachstum', 'Fortschritt', 'Verbesserung', 'Änderung',
-  'Garten', 'Kuchen', 'Wagen', 'Kissen', 'Essen', 'Trinken', 'Wohnen',
-  'Schreiben', 'Lesen', 'Reisen', 'Kochen', 'Lernen', 'Arbeiten'
+  'Garten', 'Kuchen', 'Wagen', 'Kissen',
+  'Menschen', 'Chancen', 'Kosten', 'Helden', 'Freunde', 'Termine', 'Vorschläge', 'Ziele', 'Ideen', 'Fragen', 'Antworten', 'Probleme', 'Lösungen', 'Möglichkeiten', 'Veränderungen', 'Entscheidungen', 'Erwartungen', 'Traditionen', 'Erfahrungen'
 ]);
 
 // Common conjugated/finite German verb forms (whitelist for verb detection)
@@ -882,7 +882,22 @@ const COMMON_VERBS = new Set([
   'wohnt', 'wohnen', 'wohnte', 'wohnten', 'lebt', 'leben', 'lebte', 'lebten',
   'stirbt', 'sterben', 'starb', 'starben', 'gilt', 'gelten', 'galt', 'galten',
   'scheint', 'scheinen', 'schien', 'schienen', 'klingt', 'klingen', 'klang', 'klangen',
-  'passt', 'passen', 'passte', 'passten', 'stimmt', 'stimmen', 'stimmte', 'stimmten'
+  'passt', 'passen', 'passte', 'passten', 'stimmt', 'stimmen', 'stimmte', 'stimmten',
+  // Ich-form verbs (endings in -e) — needed for V2 verb detection
+  'lasse', 'mache', 'sage', 'gehe', 'komme', 'nehme', 'gebe', 'sehe', 'bringe', 'finde',
+  'kenne', 'denke', 'heiße', 'bleibe', 'wohne', 'lebe', 'arbeite', 'lerne', 'spiele',
+  'schreibe', 'lese', 'spreche', 'trinke', 'esse', 'fahre', 'trage', 'laufe', 'schlafe',
+  'verstehe', 'entscheide', 'glaube', 'hoffe', 'warte', 'frage', 'antworte', 'folge',
+  'übe', 'schicke', 'zeige', 'kaufe', 'wünsche', 'öffne', 'schließe', 'tanze', 'singe',
+  'schwimme', 'fliege', 'gewinne', 'beginne', 'entwickle', 'erzähle', 'bedanke', 'sitze',
+  'liege', 'stehe', 'setze', 'stelle', 'lege', 'helfe', 'werfe', 'treffe', 'fange',
+  'hebe', 'schaffe', 'lasse', 'bedeute', 'überlege', 'reise', 'feiere', 'atme', 'handle',
+  'bade', 'rede', 'notiere', 'akzeptiere', 'studiere', 'rechne', 'zeichne', 'diene',
+  'danke', 'gratuliere', 'liebe', 'hasse', 'meine', 'zähle', 'rette', 'diene',
+  'wiederhole', 'rufe', 'weiss', 'brauche', 'suche', 'koche', 'beschreibe', 'erkläre',
+  'sammle', 'wechsle', 'vergleiche', 'lösche', 'würde', 'wäre', 'hätte', 'könnte',
+  'sollte', 'müsste', 'wollte', 'dürfte', 'möchte', 'handele', 'lächle', 'zweifle',
+  'verdiene', 'bestelle', 'bezahle', 'erreiche', 'vermisse', 'genieße', 'wünsche'
 ]);
 
 function checkGermanGrammar(sentence) {
@@ -913,19 +928,33 @@ function checkGermanGrammar(sentence) {
   }
 
   // 2-6. Nebensatz checks: verb must be at the END after subjunctions
-  const SUB_CONJS = ['obwohl', 'weil', 'dass', 'damit', 'wenn', 'nachdem', 'bevor', 'sobald', 'solange', 'falls', 'indem', 'sofern'];
-  for (const conj of SUB_CONJS) {
-    const re = new RegExp(`\\b${conj}\\s+(.+?)(?:[,.]|$)`, 'i');
-    const m = sentence.match(re);
-    if (m) {
-      const clauseWords = m[1].trim().split(/\s+/);
-      if (clauseWords.length >= 2) {
+    const SUB_CONJS = ['obwohl', 'weil', 'dass', 'damit', 'wenn', 'nachdem', 'bevor', 'sobald', 'solange', 'falls', 'indem', 'sofern', 'ob', 'als', 'während'];
+    // Preposition articles — if "während" is followed by one of these, it's a preposition ("während des Krieges"), not a subjunction
+    const PREP_ARTICLES = /^(der|die|das|den|dem|des|eines|einer|einem|einen|meines|meiner|meinem|deines|deiner|deinem|seines|seiner|seinem|ihres|ihrer|ihrem|unseres|unserer|unserem|DES|DER|DES|EINES|EINER|EINEM)$/;
+    for (const conj of SUB_CONJS) {
+      const re = new RegExp(`\\b${conj}\\s+(.+?)(?:[,.]|$)`, 'i');
+      const m = sentence.match(re);
+      if (m) {
+        const clauseWords = m[1].trim().split(/\s+/);
+        if (clauseWords.length < 2) continue;
+        // Skip "während" when used as preposition ("während des Krieges")
+        if (conj === 'während' && clauseWords[0] && PREP_ARTICLES.test(clauseWords[0])) continue;
+        // Skip "als" when used as comparative ("größer als ich")
+        if (conj === 'als' && clauseWords.length <= 3 && !clauseWords.some(w => isGermanVerb(w.replace(/[.,!?]/g, '')))) continue;
         const lastWord = clauseWords[clauseWords.length - 1].replace(/[.,!?]/g, '');
         const prevWord = clauseWords[clauseWords.length - 2].replace(/[.,!?]/g, '');
         const hasVerb = clauseWords.some(w => isGermanVerb(w.replace(/[.,!?]/g, '')));
         // Modal verb at end needs an infinitive before it: "... sein kann"
         if (MODAL_VERBS.includes(lastWord.toLowerCase()) && !isInfinitiv(prevWord)) {
           issues.push(`📐 Nach dem Modalverb "${lastWord}" fehlt der Infinitiv. Z.B.: "Obwohl das Leben schwierig **sein** ${lastWord}".`);
+          score -= 15;
+          continue;
+        }
+        // Modal verb mid-clause + infinitive at end → wrong order in Nebensatz: "weil er will gehen" → "weil er gehen will"
+        const hasModalBefore = clauseWords.some((w, wi) => wi < clauseWords.length - 1 && MODAL_VERBS.includes(w.replace(/[.,!?]/g, '').toLowerCase()));
+        if (hasModalBefore && isInfinitiv(lastWord)) {
+          const modalWord = clauseWords.find(w => MODAL_VERBS.includes(w.replace(/[.,!?]/g, '').toLowerCase()));
+          issues.push(`📐 Nach "${conj}" mit Modalverb: "${modalWord}" muss NACH dem Infinitiv am Ende stehen. Richtig: "${conj} ${clauseWords.filter(w => w !== modalWord).join(' ')} ${modalWord}".`);
           score -= 15;
           continue;
         }
@@ -938,7 +967,6 @@ function checkGermanGrammar(sentence) {
         }
       }
     }
-  }
 
   // 7. Verb position in main clause (V2 rule): only when sentence starts with a subject pronoun
   const firstWord = words[0].replace(/[.,!?;:()""'']/g, '');
@@ -952,15 +980,19 @@ function checkGermanGrammar(sentence) {
     }
   }
 
-  // 8. Check "um ... zu" + Infinitiv
+  // 8. Check "um ... zu" + Infinitiv (only if "zu" marks an infinitive, not a preposition)
   if (sentence.match(/\bum\b/i) && sentence.match(/\bzu\b/i)) {
     const umIdx = sentence.search(/\bum\b/i);
     const zuIdx = sentence.search(/\bzu\b/i);
-    if (umIdx < zuIdx) {
+    if (umIdx >= 0 && zuIdx > umIdx) {
       const afterZu = sentence.slice(zuIdx + 2).trim().split(/\s+/)[0];
-      if (afterZu && !afterZu.endsWith('en')) {
-        issues.push('📐 Nach "um ... zu" kommt der Infinitiv (Verb mit -en) ans Ende. Z.B.: "um Deutsch zu **lernen**".');
-        score -= 10;
+      // Skip if "zu" is a preposition (followed by article/Dativ pronoun): "zu dem Haus", "zu meinem Auto"
+      const zuNextClean = afterZu ? afterZu.replace(/[.,!?]/g, '') : '';
+      if (zuNextClean && !isGermanArticle(zuNextClean) && !isGermanPronoun(zuNextClean)) {
+        if (!zuNextClean.endsWith('en')) {
+          issues.push('📐 Nach "um ... zu" kommt der Infinitiv (Verb mit -en) ans Ende. Z.B.: "um Deutsch zu **lernen**".');
+          score -= 10;
+        }
       }
     }
   }
@@ -991,13 +1023,21 @@ function checkGermanGrammar(sentence) {
     score -= 5;
   }
 
-  // 11. Missing comma before subjunctions
-  for (const conj of SUB_CONJS) {
+  // 11. Missing comma before subjunctions (but NOT comparative "als" or prepositional "während")
+  // "als" with a clause → comma required ("..., als ich ..."); "als" comparative → no comma ("größer als ich")
+  const COMMA_CONJS = ['obwohl', 'weil', 'dass', 'damit', 'wenn', 'nachdem', 'bevor', 'sobald', 'solange', 'falls', 'indem', 'sofern', 'ob'];
+  for (const conj of COMMA_CONJS) {
     const re = new RegExp(`[a-zäöüß]\\s+${conj}\\b`, 'i');
     if (re.test(sentence) && !new RegExp(`,\\s+${conj}\\b`, 'i').test(sentence)) {
       issues.push(`🔖 Vor "${conj}" steht ein Komma: "... , ${conj} ...".`);
       score -= 5;
     }
+  }
+  // "als" temporal clause → comma required, but only mid-sentence ("... , als ich ..."), not at sentence start
+  const alsClauseRe = /[a-zäöüß]\s+als\s+(?:ich|du|er|sie|es|wir|ihr|man|der|die|das)\s+[a-zäöüß]+\s+[a-zäöüß]+/i;
+  if (alsClauseRe.test(sentence) && !/,\s*als\b/i.test(sentence)) {
+    issues.push('🔖 Vor dem temporalen "als" (Nebensatz) steht ein Komma: "... , als ich ...".');
+    score -= 5;
   }
 
   // 12. HOCHDEUTSCH: Komparativ + "wie" statt "als" — "größer wie" → ✗
@@ -1019,6 +1059,13 @@ function checkGermanGrammar(sentence) {
         issues.push(`📐 Hochdeutsch: Nach "${firstLC}" muss das Verb an Position 2 — das Subjekt rutscht hinter das Verb. Richtig: "${firstLC.charAt(0).toUpperCase() + firstLC.slice(1)} **VERB** Subjekt ..."`);
         score -= 12;
       }
+    }
+    // Check after-comma inversion: "... und deshalb **ich**" → wrong; "... und deshalb **gehe ich**" → right
+    const commaInvRE = new RegExp(`[,]\\s+(?:und|denn|aber|doch|sondern)?\\s+(${INVERSION_WORDS.join('|')})\\s+([a-zA-ZäöüßÄÖÜß]+)`, 'i');
+    const ciMatch = sentence.match(commaInvRE);
+    if (ciMatch && !isGermanVerb(ciMatch[2]) && !isGermanPrep(ciMatch[2]) && isGermanPronoun(ciMatch[2])) {
+      issues.push(`📐 Nach "${ciMatch[1]}" (nach Komma) muss das Verb an Position 2. Richtig: "..., ${ciMatch[1]} **VERB** Subjekt".`);
+      score -= 12;
     }
   }
 
@@ -1048,6 +1095,8 @@ function checkGermanGrammar(sentence) {
 function isGermanVerb(w) {
   const wc = w.replace(/[.,!?;:()""'']/g, '').toLowerCase();
   if (wc.length < 2) return false;
+  // Adverbs/pronouns that end in -en/-eln/-ern but are NOT verbs
+  if (NON_VERB_WORDS.has(wc)) return false;
   // Exact whitelist match (conjugated forms + common verbs)
   if (COMMON_VERBS.has(wc)) return true;
   // Infinitives / plural present: verbs end in -en/-eln/-ern.
@@ -1056,6 +1105,14 @@ function isGermanVerb(w) {
   if (GERMAN_NOUNS.has(capitalCheck) && w[0] === w[0].toUpperCase()) return false;
   return wc.endsWith('en') || wc.endsWith('eln') || wc.endsWith('ern');
 }
+
+// Words ending in -en/-eln/-ern that are NOT verbs (adverbs, pronouns, prepositions)
+const NON_VERB_WORDS = new Set([
+  'morgen', 'gestern', 'zwischen', 'jeden', 'meinen', 'deinen', 'seinen', 'ihren',
+  'unseren', 'euren', 'keinen', 'diesen', 'welchen', 'beiden', 'vielen', 'einigen',
+  'manchen', 'anderen', 'denen', 'deren', 'wessen', 'keinem', 'wieder', 'gegen',
+  'übermorgen', 'vorgestern', 'eine', 'einen'// 'eine'/'einen' handled by article check but belt&braces
+]);
 
 function isGermanParticle(w) {
   const wc = w.replace(/[.,!?]/g, '').toLowerCase();
