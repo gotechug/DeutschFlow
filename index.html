@@ -173,6 +173,7 @@
   /* ===== MODE TABS ===== */
   .mode-tabs {
     display: flex;
+    flex-wrap: wrap;
     gap: 8px;
     max-width: 1100px;
     margin: 12px auto 0;
@@ -431,6 +432,25 @@
   .blitz-done h3 { font-size: 1.15rem; margin-bottom: 4px; }
   .blitz-done p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 14px; }
   .blitz-again { padding: 10px 28px; background: var(--primary); color: white; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; }
+  .supp-tab.active { border-color: var(--gold); color: var(--gold); box-shadow: 0 -2px 12px rgba(240,192,64,0.15); }
+  .supp-panel { display: none; }
+  .supp-panel.active { display: block; animation: slideUp 0.3s ease; }
+  .nv-card { padding: 10px 14px; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; }
+  .nv-card .nv-expr { font-weight: 700; font-size: 1rem; color: var(--primary-glow); }
+  .nv-card .nv-meaning { font-size: 0.8rem; color: var(--text-muted); }
+  .nv-card .nv-example { font-size: 0.88rem; color: var(--text-dim); margin-top: 4px; font-style: italic; }
+  .cond-card { padding: 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; border-left: 3px solid var(--primary-glow); }
+  .cond-card .cond-title { font-weight: 700; font-size: 0.95rem; color: var(--gold); }
+  .cond-card .cond-desc { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 4px; }
+  .cond-card .cond-ex { font-size: 0.88rem; color: var(--text-dim); line-height: 1.5; }
+  .routine-item { display: flex; align-items: center; gap: 10px; padding: 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; cursor: pointer; transition: all 0.15s; user-select: none; }
+  .routine-item:hover { border-color: var(--surface3); }
+  .routine-item.done { background: rgba(64,176,96,0.1); border-color: rgba(64,176,96,0.3); }
+  .routine-item .r-check { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--surface3); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; flex-shrink: 0; transition: all 0.15s; }
+  .routine-item.done .r-check { background: var(--green); border-color: var(--green); color: white; }
+  .routine-item .r-day { font-size: 0.78rem; font-weight: 700; color: var(--gold); min-width: 44px; }
+  .routine-item .r-text { font-size: 0.9rem; color: var(--text-dim); line-height: 1.4; }
+  .routine-item.done .r-text { color: var(--text); }
 </style>
 </head>
 <body>
@@ -477,6 +497,7 @@
   <button class="mode-tab active" id="tab-practice" onclick="switchMode('practice')">✏️ Üben</button>
   <button class="mode-tab" id="tab-test" onclick="switchMode('test')">🎯 Test-Simulator</button>
   <button class="mode-tab" id="tab-blitz" onclick="switchMode('blitz')">🃏 Vokabel-Blitz</button>
+  <button class="mode-tab" id="tab-supplement" onclick="switchMode('supplement')">📗 Ergänzung</button>
 </div>
 
 <div class="container">
@@ -618,6 +639,108 @@
         <button class="blitz-again" onclick="resetBlitz()">🔄 Nochmal</button>
       </div>
     </div>
+  </div>
+
+  <!-- ===== SUPPLEMENT MODE ===== -->
+  <div class="mode-panel" id="panel-supplement">
+    <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;">
+      <button class="mode-tab supp-tab active" data-stab="wortwolke" onclick="switchSuppTab('wortwolke')" style="flex:0;font-size:0.85rem;">☁️ Wortwolke</button>
+      <button class="mode-tab supp-tab" data-stab="nomenverb" onclick="switchSuppTab('nomenverb')" style="flex:0;font-size:0.85rem;">🔗 Nomen-Verb</button>
+      <button class="mode-tab supp-tab" data-stab="konditional" onclick="switchSuppTab('konditional')" style="flex:0;font-size:0.85rem;">📐 Konditional</button>
+      <button class="mode-tab supp-tab" data-stab="umformung" onclick="switchSuppTab('umformung')" style="flex:0;font-size:0.85rem;">✏️ Umformung</button>
+      <button class="mode-tab supp-tab" data-stab="routine" onclick="switchSuppTab('routine')" style="flex:0;font-size:0.85rem;">📅 Routine</button>
+    </div>
+
+    <div class="supp-panel active" id="sp-wortwolke">
+      <div class="game-area" style="margin-bottom:10px;">
+        <div class="section-title">☁️ Wortwolke <span class="badge">Vokabeln in Gruppen</span></div>
+        <p style="font-size:0.9rem;color:var(--text-dim);margin-bottom:10px;line-height:1.5;">Wähle ein Thema und tippe auf ein Wort, um es zu übernehmen.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;" id="wortwolkeChips"></div>
+        <div class="vocab-chips" id="wortwolkeWords" style="max-height:300px;"></div>
+      </div>
+      <div class="game-area">
+        <div class="section-title">✏️ Eigene Wortwolke bauen</div>
+        <p style="font-size:0.9rem;color:var(--text-dim);margin-bottom:8px;line-height:1.5;">Wähle ein Thema und schreibe 8-12 verwandte Nomen auf.</p>
+        <div class="input-wrap">
+          <textarea id="wortwolkeCustom" placeholder="THEMA: Wort1, Wort2, Wort3 ..." style="min-height:70px;"></textarea>
+        </div>
+        <div class="action-row">
+          <button class="btn-success" onclick="saveWortwolke()">💾 Speichern</button>
+          <button class="btn-outline" onclick="document.getElementById('wortwolkeCustom').value=''">🗑️ Leeren</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="supp-panel" id="sp-nomenverb">
+      <div class="game-area" style="margin-bottom:10px;">
+        <div class="section-title">🔗 Nomen-Verb-Verbindungen <span class="badge">10</span></div>
+        <p style="font-size:0.9rem;color:var(--text-dim);margin-bottom:10px;line-height:1.5;">Lerne diese Nomen-Verb-Kombinationen als feste Ausdrücke.</p>
+        <div style="display:grid;grid-template-columns:1fr;gap:6px;" id="nomenVerbList"></div>
+      </div>
+      <div class="game-area">
+        <div class="section-title">✏️ Lückentext <span class="badge">5 Sätze</span></div>
+        <p style="font-size:0.9rem;color:var(--text-dim);margin-bottom:8px;">Ergänze die Sätze mit der passenden Nomen-Verb-Verbindung.</p>
+        <div id="fillInArea">
+          <div style="padding:14px;background:var(--surface2);border-radius:10px;font-size:1rem;line-height:1.6;margin-bottom:10px;" id="fillInSentence"></div>
+          <div id="fillInInputArea"></div>
+          <div id="fillInFeedback" style="margin-top:8px;padding:10px;border-radius:8px;display:none;"></div>
+          <div class="action-row" style="margin-top:10px;">
+            <button class="btn-primary" onclick="checkFillIn()">✅ Prüfen</button>
+            <button class="btn-outline" onclick="nextFillIn()" id="fillInNextBtn" style="display:none;">Weiter →</button>
+          </div>
+          <div style="margin-top:8px;font-size:0.85rem;color:var(--text-muted);" id="fillInProgress"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="supp-panel" id="sp-konditional">
+      <div class="game-area" style="margin-bottom:10px;">
+        <div class="section-title">📐 Satzbau: Konditionale Zusammenhänge</div>
+        <p style="font-size:0.9rem;color:var(--text-dim);margin-bottom:8px;line-height:1.5;">Bedingungssätze verbinden eine Bedingung mit ihrem Ergebnis.</p>
+        <div style="display:grid;grid-template-columns:1fr;gap:10px;" id="conditionalRulesList"></div>
+      </div>
+      <div class="game-area">
+        <div class="section-title">✏️ Selbst bauen</div>
+        <div class="input-wrap">
+          <textarea id="conditionalInput" placeholder="Schreibe einen Konditionalsatz ..." style="min-height:80px;"></textarea>
+        </div>
+        <div class="action-row">
+          <button class="btn-primary" onclick="checkConditionalSentence()">✅ Prüfen</button>
+          <button class="btn-outline" onclick="resetCondFeedback()">🗑️ Leeren</button>
+        </div>
+        <div class="feedback-box" id="condFeedback"></div>
+      </div>
+    </div>
+
+    <div class="supp-panel" id="sp-umformung">
+      <div class="game-area">
+        <div class="section-title">✏️ Umformungsübungen <span class="badge">6</span></div>
+        <p style="font-size:0.9rem;color:var(--text-dim);margin-bottom:8px;line-height:1.5;">Schreibe den Satz mit dem Wort in Klammern um.</p>
+        <div style="padding:14px;background:var(--surface2);border-radius:10px;font-size:1rem;line-height:1.6;margin-bottom:10px;">
+          <div style="font-size:0.75rem;color:var(--gold);font-weight:700;margin-bottom:4px;">Aufgabe <span id="rewriteNum">1</span>/6</div>
+          <div id="rewriteOriginal"></div>
+          <div style="margin-top:6px;font-size:0.85rem;color:var(--primary-glow);">👉 <strong>Wort:</strong> <span id="rewriteWord"></span></div>
+        </div>
+        <div class="input-wrap">
+          <textarea id="rewriteInput" placeholder="Deine Umformung ..." style="min-height:70px;"></textarea>
+        </div>
+        <div id="rewriteFeedback" style="margin-top:8px;padding:10px;border-radius:8px;display:none;"></div>
+        <div class="action-row" style="margin-top:10px;">
+          <button class="btn-primary" onclick="checkRewrite()">✅ Prüfen</button>
+          <button class="btn-outline" onclick="showRewriteSolution()">💡 Lösung</button>
+          <button class="btn-outline" onclick="nextRewrite()" id="rewriteNextBtn" style="display:none;">Weiter →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="supp-panel" id="sp-routine">
+      <div class="game-area">
+        <div class="section-title">📅 7-Tage-Schreibroutine</div>
+        <p style="font-size:0.9rem;color:var(--text-dim);margin-bottom:10px;line-height:1.5;">Folge dieser wöchentlichen Routine, um systematisch deine Schreibfähigkeiten zu verbessern.</p>
+        <div id="weeklyRoutineList" style="display:flex;flex-direction:column;gap:8px;"></div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -803,6 +926,87 @@ const DATA = {
   ]
 };
 
+// ===== SUPPLEMENT DATA (from B2.1 Workbook Supplement)
+const SUPPLEMENT = {
+  wortwolken: {
+    familie: {
+      title: 'Familie',
+      emoji: '👨‍👩‍👧‍👦',
+      words: [
+        'die Familie', 'der Zusammenhalt', 'die Erwartung', 'der Druck',
+        'der Respekt', 'die Verantwortung', 'die Freiheit', 'das Vertrauen',
+        'die Unterstützung', 'das Vorbild', 'der Stolz', 'die Fürsorge'
+      ]
+    },
+    beruf: {
+      title: 'Beruf',
+      emoji: '💼',
+      words: [
+        'der Beruf', 'die Karriere', 'die Ausbildung', 'das Studium',
+        'die Erfahrung', 'die Fähigkeit', 'die Führungsposition', 'das Unternehmen',
+        'der Betrieb', 'die Konkurrenz', 'die Qualifikation', 'die Kompetenz'
+      ]
+    },
+    migration: {
+      title: 'Migration',
+      emoji: '🌍',
+      words: [
+        'die Migration', 'die Integration', 'die Heimat', 'die Kultur',
+        'die Sprache', 'die Gesellschaft', 'die Lebensbedingungen',
+        'die Identität', 'die Tradition', 'die Vielfalt', 'die Trennung',
+        'die Anpassung'
+      ]
+    }
+  },
+  nomenVerbVerbindungen: [
+    { expr: 'Respekt zeigen', en: 'to show respect', ex: 'Kinder sollten ihren Eltern Respekt zeigen.' },
+    { expr: 'unter Druck setzen', en: 'to put under pressure', ex: 'Eltern sollten ihre Kinder nicht unter Druck setzen.' },
+    { expr: 'Erwartungen erfüllen', en: 'to fulfil expectations', ex: 'Man muss nicht immer die Erwartungen seiner Eltern erfüllen.' },
+    { expr: 'Verantwortung übernehmen', en: 'to take responsibility', ex: 'Mit 18 sollte man Verantwortung übernehmen können.' },
+    { expr: 'Freiheit lassen', en: 'to give freedom', ex: 'Gute Eltern lassen ihren Kindern die nötige Freiheit.' },
+    { expr: 'Verständnis zeigen', en: 'to show understanding', ex: 'Bei der Berufswahl sollten Eltern Verständnis zeigen.' },
+    { expr: 'Rücksicht nehmen', en: 'to take into consideration', ex: 'Geschwister sollten aufeinander Rücksicht nehmen.' },
+    { expr: 'zur Verfügung stehen', en: 'to be available', ex: 'Die Familie steht einem immer zur Verfügung.' },
+    { expr: 'Halt geben', en: 'to give stability', ex: 'Ein gutes Familienleben kann Kindern Halt geben.' },
+    { expr: 'eine Entscheidung treffen', en: 'to make a decision', ex: 'Jeder Mensch muss irgendwann eine wichtige Entscheidung treffen.' }
+  ],
+  fillInExercises: [
+    { sentence: 'Eltern sollten ihren Kindern __________ und ihnen nicht alles vorschreiben.', answer: 'Freiheit lassen', hint: 'give freedom' },
+    { sentence: 'Ein gutes Familienleben kann Kindern __________.', answer: 'Halt geben', hint: 'give stability' },
+    { sentence: 'Man sollte __________, auch wenn man anderer Meinung ist.', answer: 'Respekt zeigen', hint: 'show respect' },
+    { sentence: 'Zu viele Erwartungen können junge Menschen __________.', answer: 'unter Druck setzen', hint: 'put under pressure' },
+    { sentence: 'Wenn ich den Betrieb übernehme, muss ich __________.', answer: 'Verantwortung übernehmen', hint: 'take responsibility' }
+  ],
+  conditionalRules: [
+    { title: 'wenn / falls / sofern', desc: 'Nebensatz: Verb am ENDE', ex: 'Wenn ich Zeit habe, helfe ich dir.', ex2: 'Falls es regnet, bleiben wir zu Hause.' },
+    { title: 'Nebensatz VORNE', desc: 'Verb im Hauptsatz beginnt', ex: 'Wenn ich Zeit habe, helfe ich dir.', ex2: 'Falls es regnet, bleiben wir zu Hause.' },
+    { title: 'bei + Dativ', desc: 'Nominale Kondition', ex: 'Bei einer guten Zusammenarbeit braucht man Vertrauen.', ex2: 'Bei Regen bleiben wir zu Hause.' },
+    { title: 'Konjunktiv II (unreal)', desc: 'Irreale Bedingung', ex: 'Wenn ich mehr Zeit hätte, würde ich öfter schreiben.', ex2: 'Wenn ich du wäre, würde ich es versuchen.' },
+    { title: 'Verb-Erst (ohne wenn)', desc: 'Konjunktiv II ohne Konjunktion', ex: 'Hätte ich mehr Zeit, würde ich öfter schreiben.', ex2: 'Wäre ich früher geboren, hätte ich anders gelebt.' }
+  ],
+  rewriteExercises: [
+    { original: 'Wenn alle toleranter wären, würde sich das positiv auf die ganze Familie auswirken.', word: 'wären', solution: 'Wären alle toleranter, würde sich das positiv auf die ganze Familie auswirken.' },
+    { original: 'Meine Kinder sollen mein Geschäft nur übernehmen, wenn sie das wirklich wollen.', word: 'sofern', solution: 'Meine Kinder sollen mein Geschäft nur übernehmen, sofern sie das wirklich wollen.' },
+    { original: 'Wenn es um die Berufswahl geht, sollten meine Kinder frei entscheiden.', word: 'bei', solution: 'Bei der Berufswahl sollten meine Kinder frei entscheiden.' },
+    { original: 'Wenn ich die Praxis meiner Mutter nicht übernommen hätte, hätte sie mir das nie verziehen.', word: 'hätte', solution: 'Hätte ich die Praxis meiner Mutter nicht übernommen, hätte sie mir das nie verziehen.' },
+    { original: 'Wenn ein Familienbetrieb gut läuft, sollten die Kinder ihn auf jeden Fall übernehmen.', word: 'falls', solution: 'Falls ein Familienbetrieb gut läuft, sollten die Kinder ihn auf jeden Fall übernehmen.' },
+    { original: 'Wenn Eltern ein gutes Vorbild sein wollen, sollten sie ihre Kinder nie unter Druck setzen.', word: 'sofern', solution: 'Sofern Eltern ein gutes Vorbild sein wollen, sollten sie ihre Kinder nie unter Druck setzen.' }
+  ],
+  weeklyRoutine: [
+    { day: 'Tag 1', emoji: '📚', text: 'Lerne 8–10 Wörter aus einer Wortwolke.' },
+    { day: 'Tag 2', emoji: '📝', text: 'Lerne fünf Nomen-Verb-Verbindungen und schreibe einen Beispielsatz für jede.' },
+    { day: 'Tag 3', emoji: '📐', text: 'Übe ein Grammatikmuster (wenn, falls, sofern, bei + Dativ).' },
+    { day: 'Tag 4', emoji: '✏️', text: 'Schreibe fünf einfache Sätze zu B2-Sätzen um (Umformungsübung).' },
+    { day: 'Tag 5', emoji: '📄', text: 'Schreibe einen Absatz von 100–150 Wörtern zu einem Thema.' },
+    { day: 'Tag 6', emoji: '🔍', text: 'Korrigiere deine Fehler und schreibe den Absatz neu.' },
+    { day: 'Tag 7', emoji: '🔄', text: 'Wiederhole alle Wörter, ohne ins Heft zu schauen.' }
+  ]
+};
+
+let supplementTab = 'wortwolke';
+let fillInState = { idx: 0, shown: false };
+let rewriteState = { idx: 0, shown: false };
+
 // ===== GERMAN GRAMMAR CHECKER =====
 // Common German nouns for capitalization check
 const GERMAN_NOUNS = new Set([
@@ -837,7 +1041,10 @@ const GERMAN_NOUNS = new Set([
   'Hilfe', 'Rat', 'Tipp', 'Vorschlag', 'Empfehlung', 'Wahl', 'Auswahl',
   'Entwicklung', 'Wachstum', 'Fortschritt', 'Verbesserung', 'Änderung',
   'Garten', 'Kuchen', 'Wagen', 'Kissen',
-  'Menschen', 'Chancen', 'Kosten', 'Helden', 'Freunde', 'Termine', 'Vorschläge', 'Ziele', 'Ideen', 'Fragen', 'Antworten', 'Probleme', 'Lösungen', 'Möglichkeiten', 'Veränderungen', 'Entscheidungen', 'Erwartungen', 'Traditionen', 'Erfahrungen'
+  'Menschen', 'Chancen', 'Kosten', 'Helden', 'Freunde', 'Termine', 'Vorschläge', 'Ziele', 'Ideen', 'Fragen', 'Antworten', 'Probleme', 'Lösungen', 'Möglichkeiten', 'Veränderungen', 'Entscheidungen', 'Erwartungen', 'Traditionen', 'Erfahrungen',
+  'Zusammenhalt', 'Respekt', 'Verantwortung', 'Freiheit', 'Vertrauen', 'Unterstützung', 'Fürsorge', 'Karriere', 'Studium',
+  'Unternehmen', 'Qualifikation', 'Kompetenz', 'Migration', 'Integration', 'Kultur', 'Identität', 'Vielfalt', 'Trennung',
+  'Anpassung', 'Rücksicht', 'Verständnis', 'Halt', 'Satzbau', 'Wortwolke', 'Ergänzung'
 ]);
 
 // Common conjugated/finite German verb forms (whitelist for verb detection)
@@ -1520,7 +1727,7 @@ const escHtml = escapeHtml;
 
 // ===== MODE SWITCHING =====
 function switchMode(mode) {
-  ['practice', 'test', 'blitz'].forEach(m => {
+  ['practice', 'test', 'blitz', 'supplement'].forEach(m => {
     document.getElementById('panel-' + m).classList.toggle('active', m === mode);
     document.getElementById('tab-' + m).classList.toggle('active', m === mode);
   });
@@ -1913,6 +2120,174 @@ function resetBlitz() {
   document.getElementById('blitzSetup').style.display = 'block';
 }
 
+// ===== SUPPLEMENT FUNCTIONS =====
+function switchSuppTab(tab) {
+  supplementTab = tab;
+  document.querySelectorAll('.supp-tab').forEach(b => b.classList.toggle('active', b.getAttribute('data-stab') === tab));
+  document.querySelectorAll('.supp-panel').forEach(p => p.classList.toggle('active', p.id === 'sp-' + tab));
+}
+let currentWortwolke = 'familie';
+function renderWortwolkeChips() {
+  const wrap = document.getElementById('wortwolkeChips');
+  wrap.innerHTML = Object.entries(SUPPLEMENT.wortwolken).map(([id, w]) =>
+    '<span class="quiz-topic-chip ' + (id === currentWortwolke ? 'on' : '') + '" onclick="selectWortwolke(\'' + id + '\')" style="cursor:pointer;">' + w.emoji + ' ' + w.title + '</span>'
+  ).join('');
+  selectWortwolke(currentWortwolke);
+}
+function selectWortwolke(id) {
+  currentWortwolke = id;
+  document.querySelectorAll('#wortwolkeChips .quiz-topic-chip').forEach(c => c.classList.toggle('on', c.textContent.trim().includes(SUPPLEMENT.wortwolken[id].title)));
+  const w = SUPPLEMENT.wortwolken[id];
+  document.getElementById('wortwolkeWords').innerHTML = w.words.map(word =>
+    '<span class="vocab-chip">' + word + '</span>'
+  ).join('');
+}
+function saveWortwolke() {
+  const text = document.getElementById('wortwolkeCustom').value.trim();
+  if (!text) { showToast('Bitte schreibe zuerst deine Wortwolke!', 2500); return; }
+  localStorage.setItem('df_wortwolke_custom', text);
+  showToast('Eigene Wortwolke gespeichert!', 2500);
+}
+function renderNomenVerb() {
+  document.getElementById('nomenVerbList').innerHTML = SUPPLEMENT.nomenVerbVerbindungen.map(nv =>
+    '<div class="nv-card"><div class="nv-expr">' + nv.expr + '</div><div class="nv-meaning">' + nv.en + '</div><div class="nv-example">"' + nv.ex + '"</div></div>'
+  ).join('');
+  renderFillIn();
+}
+function renderFillIn() {
+  const ex = SUPPLEMENT.fillInExercises[fillInState.idx];
+  document.getElementById('fillInSentence').innerHTML = ex.sentence.replace('__________', '<span style="color:var(--gold);font-weight:800;border-bottom:2px solid var(--gold);">______</span>');
+  document.getElementById('fillInInputArea').innerHTML = '<div class="qz-input"><input type="text" id="fillInInput" placeholder="Deine Antwort ..." onkeydown="if(event.key===\'Enter\')checkFillIn()" style="flex:1;"></div><div style="font-size:0.8rem;color:var(--text-muted);margin-top:4px;">Hinweis: ' + ex.hint + '</div>';
+  document.getElementById('fillInFeedback').style.display = 'none';
+  document.getElementById('fillInNextBtn').style.display = 'none';
+  document.getElementById('fillInProgress').textContent = 'Aufgabe ' + (fillInState.idx + 1) + ' von ' + SUPPLEMENT.fillInExercises.length;
+  fillInState.shown = false;
+  setTimeout(() => { const inp = document.getElementById('fillInInput'); if (inp) inp.focus(); }, 100);
+}
+function checkFillIn() {
+  const input = document.getElementById('fillInInput');
+  const user = input.value.trim().toLowerCase();
+  const answer = SUPPLEMENT.fillInExercises[fillInState.idx].answer.toLowerCase();
+  const fb = document.getElementById('fillInFeedback');
+  const userWords = user.split(/\s+/).filter(w => w.length > 2);
+  const ansWords = answer.split(/\s+/).filter(w => w.length > 2);
+  const ok = user === answer || (userWords.length >= 1 && ansWords.every(w => user.includes(w)));
+  fb.style.display = 'block';
+  if (ok) {
+    fb.style.background = 'rgba(64,176,96,0.12)'; fb.style.border = '1px solid rgba(64,176,96,0.35)'; fb.style.color = 'var(--green-glow)';
+    fb.innerHTML = 'Richtig! <strong>' + SUPPLEMENT.fillInExercises[fillInState.idx].answer + '</strong>';
+    playSound('success');
+  } else {
+    fb.style.background = 'rgba(224,48,40,0.1)'; fb.style.border = '1px solid rgba(224,48,40,0.35)'; fb.style.color = 'var(--accent-glow)';
+    fb.innerHTML = 'Noch nicht. Versuche: <strong>' + SUPPLEMENT.fillInExercises[fillInState.idx].answer + '</strong>';
+    playSound('error');
+  }
+  document.getElementById('fillInNextBtn').style.display = 'block';
+  fillInState.shown = true;
+  input.disabled = true;
+}
+function nextFillIn() {
+  fillInState.idx = (fillInState.idx + 1) % SUPPLEMENT.fillInExercises.length;
+  if (fillInState.idx === 0) { showToast('Alle Lckentexte geschafft! +20 XP', 2500); addXP(20); }
+  const inp = document.getElementById('fillInInput');
+  if (inp) inp.disabled = false;
+  renderFillIn();
+}
+function renderConditionalRules() {
+  document.getElementById('conditionalRulesList').innerHTML = SUPPLEMENT.conditionalRules.map(r =>
+    '<div class="cond-card"><div class="cond-title">' + r.title + '</div><div class="cond-desc">' + r.desc + '</div><div class="cond-ex">"' + r.ex + '"</div><div class="cond-ex" style="margin-top:2px;">"' + r.ex2 + '"</div></div>'
+  ).join('');
+}
+function checkConditionalSentence() {
+  const input = document.getElementById('conditionalInput');
+  const text = input.value.trim();
+  const fb = document.getElementById('condFeedback');
+  if (!text) { fb.className = 'feedback-box help show'; fb.innerHTML = '<div class="fb-title">Kein Text!</div><ul class="fb-list"><li>Schreibe zuerst einen Konditionalsatz.</li></ul>'; return; }
+  const hasWenn = /\bwenn\b/i.test(text);
+  const hasFalls = /\bfalls\b/i.test(text);
+  const hasSofern = /\bsofern\b/i.test(text);
+  const hasBei = /\bbei\s+(dem|der|einem|einer)\b/i.test(text) || /\bbei\s+[A-Z]/.test(text);
+  const hasK2 = /\b(wre|htte|knnte|wrde|msste|sollte|drfte)\b/i.test(text);
+  const checks = [];
+  if (hasWenn || hasFalls || hasSofern || hasBei || hasK2) checks.push('Konditionale Struktur erkannt');
+  else checks.push('Versuche "wenn", "falls", "sofern", "bei + Dativ" oder Konjunktiv II.');
+  if (text.length >= 8) checks.push('Gute Satzlänge');
+  if (hasK2) checks.push('Konjunktiv II verwendet!');
+  fb.className = 'feedback-box help show';
+  fb.innerHTML = '<div class="fb-title">Konditionalsatz-Check</div><ul class="fb-list">' + checks.map(c => '<li>' + c + '</li>').join('') + '</ul>';
+  addXP(5); playSound('save');
+}
+function resetCondFeedback() { document.getElementById('condFeedback').className = 'feedback-box'; }
+function renderRewrite() {
+  const ex = SUPPLEMENT.rewriteExercises[rewriteState.idx];
+  document.getElementById('rewriteNum').textContent = rewriteState.idx + 1;
+  document.getElementById('rewriteOriginal').textContent = ex.original;
+  document.getElementById('rewriteWord').textContent = ex.word;
+  document.getElementById('rewriteInput').value = '';
+  document.getElementById('rewriteInput').disabled = false;
+  document.getElementById('rewriteFeedback').style.display = 'none';
+  document.getElementById('rewriteNextBtn').style.display = 'none';
+  rewriteState.shown = false;
+  setTimeout(() => { const inp = document.getElementById('rewriteInput'); if (inp) inp.focus(); }, 100);
+}
+function checkRewrite() {
+  const input = document.getElementById('rewriteInput');
+  const user = input.value.trim();
+  const ex = SUPPLEMENT.rewriteExercises[rewriteState.idx];
+  const fb = document.getElementById('rewriteFeedback');
+  if (!user) { fb.style.display = 'block'; fb.style.background = 'rgba(224,48,40,0.1)'; fb.innerHTML = 'Bitte schreibe zuerst deine Umformung.'; return; }
+  const normalize = s => s.toLowerCase().replace(/[.,!?;:""'']/g, '').replace(/\s+/g, ' ').trim();
+  const userNorm = normalize(user);
+  const solNorm = normalize(ex.solution);
+  const ok = userNorm === solNorm || userNorm.includes(solNorm) || solNorm.includes(userNorm);
+  fb.style.display = 'block';
+  if (ok) {
+    fb.style.background = 'rgba(64,176,96,0.12)'; fb.innerHTML = 'Richtig! Sehr gut umgeformt.'; playSound('success'); addXP(15);
+  } else {
+    fb.style.background = 'rgba(224,48,40,0.1)'; fb.innerHTML = 'Nicht ganz. Versuche es nochmal oder lass dir die Lsung zeigen.'; playSound('error');
+  }
+  document.getElementById('rewriteNextBtn').style.display = 'block';
+  rewriteState.shown = true;
+}
+function showRewriteSolution() {
+  const ex = SUPPLEMENT.rewriteExercises[rewriteState.idx];
+  const fb = document.getElementById('rewriteFeedback');
+  fb.style.display = 'block';
+  fb.style.background = 'rgba(136,160,248,0.1)';
+  fb.innerHTML = 'Lsung: <strong>' + ex.solution + '</strong>';
+  document.getElementById('rewriteNextBtn').style.display = 'block';
+  rewriteState.shown = true;
+}
+function nextRewrite() {
+  rewriteState.idx = (rewriteState.idx + 1) % SUPPLEMENT.rewriteExercises.length;
+  if (rewriteState.idx === 0) { showToast('Alle Umformungen geschafft! +30 XP', 2500); addXP(30); }
+  renderRewrite();
+}
+function renderWeeklyRoutine() {
+  let done = JSON.parse(localStorage.getItem('df_routine') || '[]');
+  document.getElementById('weeklyRoutineList').innerHTML = SUPPLEMENT.weeklyRoutine.map((r, i) => {
+    const isDone = done.includes(i);
+    return '<div class="routine-item ' + (isDone ? 'done' : '') + '" onclick="toggleRoutineDay(' + i + ')"><div class="r-check">' + (isDone ? '✓' : '') + '</div><span class="r-day">' + r.emoji + ' ' + r.day + '</span><span class="r-text">' + r.text + '</span></div>';
+  }).join('');
+}
+function toggleRoutineDay(idx) {
+  let done = JSON.parse(localStorage.getItem('df_routine') || '[]');
+  if (done.includes(idx)) { done = done.filter(i => i !== idx); }
+  else { done.push(idx); playSound('save'); }
+  localStorage.setItem('df_routine', JSON.stringify(done));
+  renderWeeklyRoutine();
+  if (done.length === SUPPLEMENT.weeklyRoutine.length) { showToast('Ganze Woche geschafft! +50 XP', 3000); addXP(50); confetti(); }
+}
+function initSupplement() {
+  renderWortwolkeChips();
+  renderNomenVerb();
+  renderConditionalRules();
+  renderRewrite();
+  renderWeeklyRoutine();
+  const saved = localStorage.getItem('df_wortwolke_custom');
+  if (saved) document.getElementById('wortwolkeCustom').value = saved;
+}
+
 // ===== INIT =====
 renderTopics();
 renderStructures();
@@ -1920,6 +2295,7 @@ renderPrompts();
 renderSaved();
 renderQuizTopicChips();
 renderBlitzTopicChips();
+initSupplement();
 updateHeader();
 selectTopic('topic1');
 document.getElementById('soundBtn').textContent = soundOn ? '🔊' : '🔇';
